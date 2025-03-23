@@ -121,3 +121,14 @@ footer a {
 footer a:hover {
     text-decoration: underline;
 }
+
+.chart-container {
+    width: 100%;
+    max-width: 100%;
+    height: 60vh; /* Graf zavzame 60% višine ekrana */
+}
+
+canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
