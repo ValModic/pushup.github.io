@@ -134,3 +134,29 @@ canvas {
     height: auto !important;
     max-height: 300px; /* Določi maksimalno višino */
 }
+
+.notify-button {
+    background-color: #4CAF50; /* Zelena barva za ozadje */
+    color: white; /* Bele črke */
+    border: none; /* Odstrani rob */
+    border-radius: 5px; /* Zaobljeni robovi */
+    padding: 15px 32px; /* Notranji razmiki */
+    text-align: center; /* Poravnava besedila */
+    text-decoration: none; /* Odstrani podčrtavanje */
+    display: inline-block; /* Da gumb ostane v vrstici */
+    font-size: 16px; /* Velikost pisave */
+    cursor: pointer; /* Kazalec, ki kaže, da je gumb klikabilen */
+    transition: background-color 0.3s ease; /* Prehod za spremembo barve ob hoverju */
+    margin-bottom: 20px; /* Dodaj prostor pod gumbom */
+}
+
+/* Slog gumba za obvestila pri premiku miške (hover) */
+.notify-button:hover {
+    background-color: #45a049; /* Rahlo temnejša zelena pri hoverju */
+}
+
+/* Slog gumba za obvestila, ko je fokusiran */
+.notify-button:focus {
+    outline: none; /* Odstrani rob okoli gumba ob fokusiranju */
+    box-shadow: 0 0 5px rgba(72, 172, 85, 0.8); /* Mehka senca okoli gumba ob klikih */
+}
