@@ -147,3 +147,4 @@ function updateChart() {
 // Nalaganje podatkov ob nalaganju strani
 window.onload = loadData;
 
+
