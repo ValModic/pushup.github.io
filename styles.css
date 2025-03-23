@@ -68,24 +68,24 @@ button {
     transition: background-color 0.3s ease;
 }
 
-button:hover {
+other-button:hover {
     background-color: #45a049;
 }
 
-button:active {
+other-button:active {
     background-color: #3c8e3c;
 }
 
-button:last-child {
+other-button:last-child {
     background-color: #FF920F;
     margin-top: 10px;
 }
 
-button:last-child:hover {
+other-button:last-child:hover {
     background-color: #ff4d33;
 }
 
-button:last-child:active {
+other-button:last-child:active {
     background-color: #FFF;
 }
 
