@@ -147,4 +147,13 @@ function updateChart() {
 // Nalaganje podatkov ob nalaganju strani
 window.onload = loadData;
 
+function requestNotificationPermission() {
+    if ('Notification' in window) {
+        Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+                scheduleDailyNotification();
+            }
+        });
+    }
+}
 
