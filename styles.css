@@ -1,123 +1,75 @@
-* {
+/* Nastavitve za celotno stran */
+body {
+    background-color: #121212;  /* Temno siva/črna barva ozadja */
+    color: white;  /* Bela pisava */
+    font-family: Arial, sans-serif; /* Nastavi pisavo */
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Zasede celoten zaslon */
 }
 
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f0f0f5;
-    color: #333;
+/* Slog za glavni vsebinski del */
+.container {
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
     padding: 20px;
 }
 
-.container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 30px;
-    background-color: #fff;
-    border-radius: 15px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-h1 {
-    font-size: 28px;
-    color: #333;
-    margin-bottom: 30px;
-    font-weight: bold;
-}
-
-.exercise {
-    margin-bottom: 20px;
-}
-
-label {
-    font-size: 16px;
-    color: #555;
-    display: block;
-    margin-bottom: 8px;
-}
-
-input {
-    width: 100%;
-    padding: 12px;
-    font-size: 18px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    transition: background-color 0.3s ease;
-}
-
-input:focus {
-    background-color: #eaf6ff;
-    border-color: #4CAF50;
-    outline: none;
-}
-
+/* Slog za gumb */
 button {
-    width: 100%;
-    padding: 15px;
-    background-color: #4CAF50;
-    color: white;
-    font-size: 18px;
+    background-color: #444; /* Temno siva barva za gumb */
+    color: white;  /* Bela pisava za gumb */
     border: none;
-    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 16px;
     cursor: pointer;
+    border-radius: 5px;
     margin-top: 20px;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease; /* Dodaj prehod za spremembo barve gumba */
 }
 
+/* Slog za hover efekt gumba */
 button:hover {
-    background-color: #45a049;
+    background-color: #666; /* Svetlejša siva ob prehodu */
 }
 
-button:active {
-    background-color: #3c8e3c;
+/* Slog za naslov */
+h1 {
+    color: white;  /* Bela pisava za naslov */
+    font-size: 28px;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 2px black; /* Senčenje besedila za večji kontrast */
 }
 
-button:last-child {
-    background-color: #ff6347;
-    margin-top: 10px;
+/* Slog za input polje */
+input[type="number"], input[type="text"] {
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    border: 1px solid #333; /* Temna meja okoli polja */
+    background-color: #222; /* Temno ozadje za input polje */
+    color: white;  /* Bela pisava za input */
+    transition: background-color 0.3s ease, border-color 0.3s ease; /* Dodaj prehod za input polja */
 }
 
-button:last-child:hover {
-    background-color: #ff4d33;
+/* Slog za input polje ob fokusu */
+input[type="number"]:focus, input[type="text"]:focus {
+    background-color: #333; /* Temnejše ozadje ob fokusu */
+    border-color: #555; /* Svetlejša meja ob fokusu */
 }
 
-button:last-child:active {
-    background-color: #e03a2d;
+/* Slog za seznam */
+ul {
+    list-style-type: none;
+    padding: 0;
 }
 
-.statistics {
-    margin-top: 30px;
-    font-size: 18px;
-}
-
-.statistics p {
+li {
+    color: white; /* Bela pisava za seznam */
     margin: 10px 0;
-}
-
-#totalReps, #averagePerDay {
-    font-weight: bold;
-    color: #333;
-}
-
-.chart {
-    margin-top: 40px;
-}
-
-footer {
-    margin-top: 50px;
-    font-size: 14px;
-    color: #777;
-}
-
-footer a {
-    text-decoration: none;
-    color: #4CAF50;
-}
-
-footer a:hover {
-    text-decoration: underline;
+    text-shadow: 1px 1px 2px black; /* Senčenje besedila za večji kontrast */
 }
