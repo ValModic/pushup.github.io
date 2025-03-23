@@ -123,14 +123,13 @@ footer a:hover {
 }
 
 .chart-container {
-    width: 100%;
+    width: 100vw; /* Prilagodi graf celotni širini zaslona */
     max-width: 100%;
-    height: auto; /* Ohranja avtomatsko višino */
-    aspect-ratio: 16 / 9; /* Prepreči raztezanje v višino */
+    height: 50vh; /* Zavzame polovico višine zaslona */
 }
 
 canvas {
     width: 100% !important;
-    height: auto !important;
-    max-height: 300px; /* Določi maksimalno višino */
+    height: 100% !important;
+    max-height: 400px; /* Omeji višino, da ne bo prevelik */
 }
