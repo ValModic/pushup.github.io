@@ -1,0 +1,123 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f5;
+    color: #333;
+    padding: 20px;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+h1 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 30px;
+    font-weight: bold;
+}
+
+.exercise {
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 16px;
+    color: #555;
+    display: block;
+    margin-bottom: 8px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s ease;
+}
+
+input:focus {
+    background-color: #eaf6ff;
+    border-color: #4CAF50;
+    outline: none;
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+button:active {
+    background-color: #3c8e3c;
+}
+
+button:last-child {
+    background-color: #ff6347;
+    margin-top: 10px;
+}
+
+button:last-child:hover {
+    background-color: #ff4d33;
+}
+
+button:last-child:active {
+    background-color: #e03a2d;
+}
+
+.statistics {
+    margin-top: 30px;
+    font-size: 18px;
+}
+
+.statistics p {
+    margin: 10px 0;
+}
+
+#totalReps, #averagePerDay {
+    font-weight: bold;
+    color: #333;
+}
+
+.chart {
+    margin-top: 40px;
+}
+
+footer {
+    margin-top: 50px;
+    font-size: 14px;
+    color: #777;
+}
+
+footer a {
+    text-decoration: none;
+    color: #4CAF50;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}

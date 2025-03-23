@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikacija za štetje sklec</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Štetje sklec in vadbe</h1>
+        <div class="exercise-input">
+            <h2>Jutranja vadba</h2>
+            <label for="setsMorning">Število setov:</label>
+            <input type="number" id="setsMorning" min="0" value="3">
+            <label for="repsMorning">Število ponovitev:</label>
+            <input type="number" id="repsMorning" min="0" value="5">
+
+            <h2>Večerna vadba</h2>
+            <label for="setsEvening">Število setov:</label>
+            <input type="number" id="setsEvening" min="0" value="5">
+            <label for="repsEvening">Število ponovitev:</label>
+            <input type="number" id="repsEvening" min="0" value="5">
+            <label for="maxSetEvening">Max set:</label>
+            <input type="number" id="maxSetEvening" min="0" value="10">
+        </div>
+        <div class="buttons">
+            <button onclick="addExercise()">Dodaj vadbo</button>
+            <button onclick="removeLastExercise()">Odstrani zadnji vnos</button>
+        </div>
+        <div class="statistics">
+            <p>Skupaj ponovitev: <span id="totalReps">0</span></p>
+            <p>Povprečje ponovitev na dan: <span id="averagePerDay">0.00</span></p>
+        </div>
+        <div class="chart-container">
+            <canvas id="exerciseChart"></canvas>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
