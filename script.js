@@ -157,3 +157,29 @@ function requestNotificationPermission() {
     }
 }
 
+function scheduleDailyNotification() {
+    const now = new Date();
+    const targetTime = new Date();
+    targetTime.setHours(20, 0, 0, 0); // Nastavi čas na 20:00
+
+    let delay = targetTime - now;
+    if (delay < 0) {
+        delay += 24 * 60 * 60 * 1000; // Če je ura že mimo, prestavi na naslednji dan
+    }
+
+    setTimeout(() => {
+        showMotivationalNotification();
+        setInterval(showMotivationalNotification, 24 * 60 * 60 * 1000); // Ponavljaj vsak dan
+    }, delay);
+}
+
+function showMotivationalNotification() {
+    if (Notification.permission === 'granted') {
+        navigator.serviceWorker.ready.then(registration => {
+            registration.showNotification("💪 Čas za sklece!", {
+                body: "Si danes naredil svoje sklece? Ne pozabi, da vsak trening šteje!",
+                icon: "pushup-icon.png"
+            });
+        });
+    }
+}
