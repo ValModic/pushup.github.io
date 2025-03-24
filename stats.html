@@ -3,22 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Statistika sklec</title>
+    <title>Stats</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        #exerciseChart {
+            width: 100%;
+            height: 400px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Statistika sklec</h1>
+    <h1>Statistika vadbe</h1>
     
-    <h2>Tedenska statistika</h2>
-    <canvas id="weeklyChart"></canvas>
+    <p>Total Reps: <span id="totalReps">0</span></p>
+    <p>Average per Day: <span id="averagePerDay">0</span></p>
+    
+    <canvas id="exerciseChart"></canvas>
 
-    <h2>Mesečna statistika</h2>
-    <canvas id="monthlyChart"></canvas>
+    <button onclick="window.location.href='index.html'">Domov</button>
 
-    <button onclick="window.location.href='index.html';">Domov</button>
+    <script>
+        let exerciseData = {};  // Prazna zbirka podatkov
 
-    <script src="stats.js"></script>
+        // Preberi podatke iz localStorage
+        function loadStatsData() {
+            const savedData = localStorage.getItem('exerciseData');
+            if (savedData) {
+                exerciseData = JSON.parse(savedData);
+                console.log('Loaded exercise data:', exerciseData);
+                updateStatistics();
+                updateChart();
+            } else {
+                console.log('No data found in localStorage.');
+            }
+        }
+
+        // Posodobi statistiko
+        function updateStatistics() {
+            let totalReps = 0;
+            let totalDays = Object.keys(exerciseData).length;
+
+            for (let date in exerciseData) {
+                totalReps += exerciseData[date].totalReps;
+            }
+
+            const averageRepsPerDay = totalDays > 0 ? totalReps / totalDays : 0;
+
+            // Posodobi HTML elemente
+            document.getElementById('totalReps').textContent = totalReps;
+            document.getElementById('averagePerDay').textContent = averageRepsPerDay.toFixed(2);
+        }
+
+        // Posodobi graf
+        let chartInstance = null;
+
+        function updateChart() {
+            const ctx = document.getElementById('exerciseChart').getContext('2d');
+            const labels = Object.keys(exerciseData);
+            const data = Object.values(exerciseData).map(data => data.totalReps);
+
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Število ponovitev na dan',
+                        data: data,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Nalaganje podatkov ob nalaganju strani
+        window.onload = function() {
+            loadStatsData();
+        };
+    </script>
 </body>
 </html>
-
