@@ -65,6 +65,7 @@
             let currentWeekData = [];
             let currentMaxSet = 0;
             let currentWeekStart = null;
+            let currentWeekLabel = null;
 
             Object.keys(exerciseData).forEach(date => {
                 const day = new Date(date);
@@ -74,22 +75,24 @@
                     if (currentWeekData.length > 0) {
                         weeklyData.push(currentWeekData.reduce((acc, data) => acc + data, 0));
                         weeklyMaxSets.push(currentMaxSet);
+                        weeklyLabels.push(currentWeekLabel);  // Dodaj oznako tedna
                     }
                     currentWeekData = [exerciseData[date].totalReps];
                     currentMaxSet = Math.max(...exerciseData[date].maxSets);
                     currentWeekStart = weekStart;
+                    currentWeekLabel = `Teden ${Math.floor(day.getDate() / 7) + 1}`;
                 } else {
                     currentWeekData.push(exerciseData[date].totalReps);
                     currentMaxSet = Math.max(currentMaxSet, ...exerciseData[date].maxSets);
                 }
 
                 const formattedDate = `${day.getDate()}-${day.getMonth() + 1}`;
-                weeklyLabels.push(formattedDate);
             });
 
             if (currentWeekData.length > 0) {
                 weeklyData.push(currentWeekData.reduce((acc, data) => acc + data, 0));
                 weeklyMaxSets.push(currentMaxSet);
+                weeklyLabels.push(currentWeekLabel);  // Dodaj zadnji teden
             }
 
             return { weeklyData, weeklyLabels, weeklyMaxSets };
@@ -104,6 +107,7 @@
             let currentMonthData = [];
             let currentMaxSet = 0;
             let currentMonthStart = null;
+            let currentMonthLabel = null;
 
             Object.keys(exerciseData).forEach(date => {
                 const day = new Date(date);
@@ -113,22 +117,24 @@
                     if (currentMonthData.length > 0) {
                         monthlyData.push(currentMonthData.reduce((acc, data) => acc + data, 0));
                         monthlyMaxSets.push(currentMaxSet);
+                        monthlyLabels.push(currentMonthLabel);  // Dodaj oznako meseca
                     }
                     currentMonthData = [exerciseData[date].totalReps];
                     currentMaxSet = Math.max(...exerciseData[date].maxSets);
                     currentMonthStart = monthStart;
+                    currentMonthLabel = `${day.getMonth() + 1}-${day.getFullYear()}`;
                 } else {
                     currentMonthData.push(exerciseData[date].totalReps);
                     currentMaxSet = Math.max(currentMaxSet, ...exerciseData[date].maxSets);
                 }
 
                 const formattedDate = `${day.getMonth() + 1}-${day.getFullYear()}`;
-                monthlyLabels.push(formattedDate);
             });
 
             if (currentMonthData.length > 0) {
                 monthlyData.push(currentMonthData.reduce((acc, data) => acc + data, 0));
                 monthlyMaxSets.push(currentMaxSet);
+                monthlyLabels.push(currentMonthLabel);  // Dodaj zadnji mesec
             }
 
             return { monthlyData, monthlyLabels, monthlyMaxSets };
@@ -225,3 +231,4 @@
     </script>
 </body>
 </html>
+
