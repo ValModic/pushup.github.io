@@ -3,54 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Statistika sklec</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="styles.css">  <!-- Povezava na styles.css -->
+    <title>Statistics</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Statistika sklec</h1>
-        <button onclick="showStats('weekly')">Tedenska</button>
-        <button onclick="showStats('monthly')">Mesečna</button>
-        <h2 id="statTitle">Tedenska statistika</h2>
-        <p>Skupaj: <span id="total">0</span></p>
-        <p>Povprečno na dan: <span id="average">0</span></p>
-        <p>Največ v enem dnevu: <span id="max">0</span></p>
-        <canvas id="statsChart"></canvas>
-        
-        <!-- Gumb za domov -->
-        <br>
-        <a href="index.html" class="home-btn">Domov</a>
+    <h1>Push-Up Statistics</h1>
+    <div id="stats">
+        <p>Total Push-Ups: <span id="total">0</span></p>
+        <p>Best Session: <span id="best">0</span></p>
+        <p>Average per Session: <span id="average">0</span></p>
     </div>
-    
     <script>
-        const weeklyData = [30, 40, 50, 20, 60, 90, 80]; // Zamenjaj s pravimi podatki
-        const monthlyData = [500, 600, 550, 700, 800, 750, 650, 780, 820, 900, 880, 920, 1000, 1100, 1050, 980, 990, 870, 910, 940, 1020, 1080, 1150, 1200, 1250, 1300, 1280, 1320, 1350, 1400];
-        let chart;
-
-        function updateChart(data, label) {
-            if (chart) chart.destroy();
-            const ctx = document.getElementById('statsChart').getContext('2d');
-            chart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: Array.from({ length: data.length }, (_, i) => i + 1),
-                    datasets: [{ label, data, backgroundColor: 'blue' }]
-                }
-            });
-        }
-
-        function showStats(type) {
-            let data = type === 'weekly' ? weeklyData : monthlyData;
-            let title = type === 'weekly' ? 'Tedenska statistika' : 'Mesečna statistika';
-            document.getElementById('statTitle').innerText = title;
-            document.getElementById('total').innerText = data.reduce((a, b) => a + b, 0);
-            document.getElementById('average').innerText = (data.reduce((a, b) => a + b, 0) / data.length).toFixed(1);
-            document.getElementById('max').innerText = Math.max(...data);
-            updateChart(data, title);
-        }
-
-        showStats('weekly');
+        document.addEventListener("DOMContentLoaded", function () {
+            let pushupData = JSON.parse(localStorage.getItem("pushupStats")) || [];
+            
+            if (pushupData.length > 0) {
+                let total = pushupData.reduce((sum, session) => sum + session, 0);
+                let best = Math.max(...pushupData);
+                let average = (total / pushupData.length).toFixed(2);
+                
+                document.getElementById("total").textContent = total;
+                document.getElementById("best").textContent = best;
+                document.getElementById("average").textContent = average;
+            }
+        });
     </script>
 </body>
 </html>
