@@ -56,7 +56,7 @@
             document.getElementById('averagePerDay').textContent = averageRepsPerDay.toFixed(2);
         }
 
-        // Pripravi tedenske podatke (ponedeljek - petek)
+        // Pripravi tedenske podatke (7 dni v tednu)
         function getWeeklyData() {
             let weeklyData = [];
             let weeklyLabels = [];
@@ -73,24 +73,24 @@
 
                 if (!currentWeekStart || currentWeekStart !== weekStart) {
                     if (currentWeekData.length > 0) {
-                        weeklyData.push(currentWeekData.reduce((acc, data) => acc + data, 0));
+                        // Dodaj podatke za prejšnji teden
+                        weeklyData.push(currentWeekData);
                         weeklyMaxSets.push(currentMaxSet);
                         weeklyLabels.push(currentWeekLabel);  // Dodaj oznako tedna
                     }
-                    currentWeekData = [exerciseData[date].totalReps];
-                    currentMaxSet = Math.max(...exerciseData[date].maxSets);
+                    currentWeekData = Array(7).fill(0); // Začni nov teden z 0
+                    currentMaxSet = 0;
                     currentWeekStart = weekStart;
                     currentWeekLabel = `Teden ${Math.floor(day.getDate() / 7) + 1}`;
-                } else {
-                    currentWeekData.push(exerciseData[date].totalReps);
-                    currentMaxSet = Math.max(currentMaxSet, ...exerciseData[date].maxSets);
                 }
 
-                const formattedDate = `${day.getDate()}-${day.getMonth() + 1}`;
+                const dayOfWeek = day.getDay(); // Dan v tednu (0 - nedelja, 1 - ponedeljek, ...)
+                currentWeekData[dayOfWeek] = exerciseData[date].totalReps;
+                currentMaxSet = Math.max(currentMaxSet, ...exerciseData[date].maxSets);
             });
 
             if (currentWeekData.length > 0) {
-                weeklyData.push(currentWeekData.reduce((acc, data) => acc + data, 0));
+                weeklyData.push(currentWeekData);
                 weeklyMaxSets.push(currentMaxSet);
                 weeklyLabels.push(currentWeekLabel);  // Dodaj zadnji teden
             }
@@ -98,49 +98,35 @@
             return { weeklyData, weeklyLabels, weeklyMaxSets };
         }
 
-        // Pripravi mesečne podatke
+        // Pripravi mesečne podatke (prikaz podatkov za vsak dan v mesecu)
         function getMonthlyData() {
             let monthlyData = [];
             let monthlyLabels = [];
             let monthlyMaxSets = [];
-            
-            let currentMonthData = [];
+
+            let currentMonthData = Array(31).fill(0); // Za 31 dni v mesecu
             let currentMaxSet = 0;
-            let currentMonthStart = null;
-            let currentMonthLabel = null;
 
             Object.keys(exerciseData).forEach(date => {
                 const day = new Date(date);
-                const monthStart = day.getMonth(); // Mesec za trenutni mesec
-
-                if (currentMonthStart !== monthStart) {
-                    if (currentMonthData.length > 0) {
-                        monthlyData.push(currentMonthData.reduce((acc, data) => acc + data, 0));
-                        monthlyMaxSets.push(currentMaxSet);
-                        monthlyLabels.push(currentMonthLabel);  // Dodaj oznako meseca
-                    }
-                    currentMonthData = [exerciseData[date].totalReps];
-                    currentMaxSet = Math.max(...exerciseData[date].maxSets);
-                    currentMonthStart = monthStart;
-                    currentMonthLabel = `${day.getMonth() + 1}-${day.getFullYear()}`;
-                } else {
-                    currentMonthData.push(exerciseData[date].totalReps);
-                    currentMaxSet = Math.max(currentMaxSet, ...exerciseData[date].maxSets);
-                }
-
-                const formattedDate = `${day.getMonth() + 1}-${day.getFullYear()}`;
+                const dayOfMonth = day.getDate() - 1; // 0 - prvi dan v mesecu, 1 - drugi dan, ...
+                
+                currentMonthData[dayOfMonth] = exerciseData[date].totalReps;
+                currentMaxSet = Math.max(currentMaxSet, ...exerciseData[date].maxSets);
             });
 
-            if (currentMonthData.length > 0) {
-                monthlyData.push(currentMonthData.reduce((acc, data) => acc + data, 0));
-                monthlyMaxSets.push(currentMaxSet);
-                monthlyLabels.push(currentMonthLabel);  // Dodaj zadnji mesec
+            for (let i = 0; i < currentMonthData.length; i++) {
+                if (currentMonthData[i] > 0) {
+                    monthlyData.push(currentMonthData[i]);
+                    monthlyMaxSets.push(currentMaxSet);
+                    monthlyLabels.push(i + 1);  // Dodajamo dni v mesecu
+                }
             }
 
             return { monthlyData, monthlyLabels, monthlyMaxSets };
         }
 
-        // Prikaz tedenskega grafa
+        // Prikaz tedenskega grafa (7 dni v tednu)
         let weeklyChartInstance = null;
 
         function updateWeeklyChart() {
@@ -157,8 +143,8 @@
                     labels: weeklyLabels,
                     datasets: [
                         {
-                            label: 'Število ponovitev na teden',
-                            data: weeklyData,
+                            label: 'Število ponovitev na teden (7 dni)',
+                            data: weeklyData.flat(), // Flatten the array to show data for each day
                             borderColor: 'rgba(75, 192, 192, 1)',
                             backgroundColor: 'rgba(75, 192, 192, 0.2)',
                             borderWidth: 1
@@ -182,7 +168,7 @@
             });
         }
 
-        // Prikaz mesečnega grafa
+        // Prikaz mesečnega grafa (prikaz za vsak dan v mesecu)
         let monthlyChartInstance = null;
 
         function updateMonthlyChart() {
