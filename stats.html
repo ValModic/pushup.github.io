@@ -3,218 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Statistika vadbe</title>
+    <title>Statistika - Pushup</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        #weeklyChart, #monthlyChart {
-            width: 100%;
-            height: 400px;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            padding: 20px;
+        }
+        canvas {
+            max-width: 100%;
+            margin-bottom: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        h1 {
+            font-size: 2.5em;
+            color: #333;
+        }
+        .chart-container {
+            margin-bottom: 40px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
-    <h1>Statistika vadbe</h1>
-    
-    <p>Total Reps: <span id="totalReps">0</span></p>
-    <p>Average per Day: <span id="averagePerDay">0</span></p>
-    
-    <canvas id="weeklyChart"></canvas>
-    <canvas id="monthlyChart"></canvas>
+
+<div class="container">
+    <h1>Statistika sklecev</h1>
 
     <button onclick="window.location.href='index.html'">Domov</button>
 
-    <script>
-        let exerciseData = {};  // Prazna zbirka podatkov
+    <div class="chart-container">
+        <h2>Mesecna statistika</h2>
+        <canvas id="monthlyChart"></canvas>
+    </div>
 
-        // Preberi podatke iz localStorage
-        function loadStatsData() {
-            const savedData = localStorage.getItem('exerciseData');
-            if (savedData) {
-                exerciseData = JSON.parse(savedData);
-                console.log('Loaded exercise data:', exerciseData);
-                updateStatistics();
-                updateWeeklyChart();
-                updateMonthlyChart();
-            } else {
-                console.log('No data found in localStorage.');
-            }
+    <div class="chart-container">
+        <h2>Tedenska statistika</h2>
+        <canvas id="weeklyChart"></canvas>
+    </div>
+
+</div>
+
+<script>
+// Funkcija za nalaganje podatkov iz localStorage
+function loadData() {
+    const savedData = localStorage.getItem('exerciseData');
+    if (savedData) {
+        exerciseData = JSON.parse(savedData);
+        updateStatistics();
+        updateMonthlyChart();
+        updateWeeklyChart();
+    }
+}
+
+// Funkcija za pridobivanje mesečnih podatkov
+function getMonthlyData() {
+    let monthlyData = [];
+    let monthlyLabels = [];
+    let monthlyMaxSets = [];
+    
+    const months = {};
+
+    Object.keys(exerciseData).forEach(date => {
+        const day = new Date(date);
+        const month = day.getMonth(); // Mesec (0 - januar, 1 - februar, ...)
+
+        if (!months[month]) {
+            months[month] = { totalReps: 0, maxSets: [] };
         }
 
-        // Posodobi statistiko
-        function updateStatistics() {
-            let totalReps = 0;
-            let totalDays = Object.keys(exerciseData).length;
+        months[month].totalReps += exerciseData[date].totalReps;
+        months[month].maxSets.push(...exerciseData[date].maxSets);
+    });
 
-            for (let date in exerciseData) {
-                totalReps += exerciseData[date].totalReps;
-            }
+    for (const month in months) {
+        monthlyData.push(months[month].totalReps);
+        monthlyMaxSets.push(Math.max(...months[month].maxSets));
+        monthlyLabels.push(`Mesec ${parseInt(month) + 1}`);
+    }
 
-            const averageRepsPerDay = totalDays > 0 ? totalReps / totalDays : 0;
+    return { monthlyData, monthlyLabels, monthlyMaxSets };
+}
 
-            // Posodobi HTML elemente
-            document.getElementById('totalReps').textContent = totalReps;
-            document.getElementById('averagePerDay').textContent = averageRepsPerDay.toFixed(2);
-        }
+// Funkcija za prikaz mesečnega grafa
+function updateMonthlyChart() {
+    const { monthlyData, monthlyLabels, monthlyMaxSets } = getMonthlyData();
+    const ctx = document.getElementById('monthlyChart').getContext('2d');
 
-        // Pripravi tedenske podatke (7 dni v tednu)
-        function getWeeklyData() {
-            let weeklyData = [];
-            let weeklyLabels = [];
-            let weeklyMaxSets = [];
-            
-            let currentWeekData = [];
-            let currentMaxSet = 0;
-            let currentWeekStart = null;
-            let currentWeekLabel = null;
-
-            Object.keys(exerciseData).forEach(date => {
-                const day = new Date(date);
-                const weekStart = day.getDate() - day.getDay(); // Ponedeljek za trenutni teden
-
-                if (!currentWeekStart || currentWeekStart !== weekStart) {
-                    if (currentWeekData.length > 0) {
-                        // Dodaj podatke za prejšnji teden
-                        weeklyData.push(currentWeekData);
-                        weeklyMaxSets.push(currentMaxSet);
-                        weeklyLabels.push(currentWeekLabel);  // Dodaj oznako tedna
-                    }
-                    currentWeekData = Array(7).fill(0); // Začni nov teden z 0
-                    currentMaxSet = 0;
-                    currentWeekStart = weekStart;
-                    currentWeekLabel = `Teden ${Math.floor(day.getDate() / 7) + 1}`;
+    const monthlyChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: monthlyLabels,
+            datasets: [
+                {
+                    label: 'Število ponovitev na mesec',
+                    data: monthlyData,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Max set (mesečno)',
+                    data: monthlyMaxSets,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderWidth: 1
                 }
+            ]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
 
-                const dayOfWeek = day.getDay(); // Dan v tednu (0 - nedelja, 1 - ponedeljek, ...)
-                currentWeekData[dayOfWeek] = exerciseData[date].totalReps;
-                currentMaxSet = Math.max(currentMaxSet, ...exerciseData[date].maxSets);
-            });
+// Funkcija za pridobivanje tedenskih podatkov (7 dni v tednu)
+function getWeeklyData() {
+    let weeklyData = [];
+    let weeklyLabels = [];
+    let weeklyMaxSets = [];
+    
+    let currentWeekData = [];
+    let currentMaxSet = 0;
+    let currentWeekStart = null;
+    let currentWeekLabel = null;
 
+    Object.keys(exerciseData).forEach(date => {
+        const day = new Date(date);
+        const weekStart = day.getDate() - day.getDay(); // Ponedeljek za trenutni teden
+
+        if (!currentWeekStart || currentWeekStart !== weekStart) {
             if (currentWeekData.length > 0) {
+                // Dodaj podatke za prejšnji teden
                 weeklyData.push(currentWeekData);
                 weeklyMaxSets.push(currentMaxSet);
-                weeklyLabels.push(currentWeekLabel);  // Dodaj zadnji teden
+                weeklyLabels.push(currentWeekLabel);  // Dodaj oznako tedna
             }
-
-            return { weeklyData, weeklyLabels, weeklyMaxSets };
+            currentWeekData = Array(7).fill(0); // Začni nov teden z 0
+            currentMaxSet = 0;
+            currentWeekStart = weekStart;
+            currentWeekLabel = `Teden ${Math.floor(day.getDate() / 7) + 1}`;
         }
 
-        // Pripravi mesečne podatke (prikaz podatkov za vsak dan v mesecu)
-        function getMonthlyData() {
-            let monthlyData = [];
-            let monthlyLabels = [];
-            let monthlyMaxSets = [];
+        const dayOfWeek = day.getDay(); // Dan v tednu (0 - nedelja, 1 - ponedeljek, ...)
+        currentWeekData[dayOfWeek] = exerciseData[date].totalReps;
+        currentMaxSet = Math.max(currentMaxSet, ...exerciseData[date].maxSets);
+    });
 
-            let currentMonthData = Array(31).fill(0); // Za 31 dni v mesecu
-            let currentMaxSet = 0;
+    if (currentWeekData.length > 0) {
+        weeklyData.push(currentWeekData);
+        weeklyMaxSets.push(currentMaxSet);
+        weeklyLabels.push(currentWeekLabel);  // Dodaj zadnji teden
+    }
 
-            Object.keys(exerciseData).forEach(date => {
-                const day = new Date(date);
-                const dayOfMonth = day.getDate() - 1; // 0 - prvi dan v mesecu, 1 - drugi dan, ...
-                
-                currentMonthData[dayOfMonth] = exerciseData[date].totalReps;
-                currentMaxSet = Math.max(currentMaxSet, ...exerciseData[date].maxSets);
-            });
+    return { weeklyData, weeklyLabels, weeklyMaxSets };
+}
 
-            for (let i = 0; i < currentMonthData.length; i++) {
-                if (currentMonthData[i] > 0) {
-                    monthlyData.push(currentMonthData[i]);
-                    monthlyMaxSets.push(currentMaxSet);
-                    monthlyLabels.push(i + 1);  // Dodajamo dni v mesecu
-                }
-            }
+// Funkcija za prikaz tedenskega grafa (7 dni v tednu)
+function updateWeeklyChart() {
+    const { weeklyData, weeklyLabels, weeklyMaxSets } = getWeeklyData();
+    const ctx = document.getElementById('weeklyChart').getContext('2d');
 
-            return { monthlyData, monthlyLabels, monthlyMaxSets };
-        }
-
-        // Prikaz tedenskega grafa (7 dni v tednu)
-        let weeklyChartInstance = null;
-
-        function updateWeeklyChart() {
-            const { weeklyData, weeklyLabels, weeklyMaxSets } = getWeeklyData();
-            const ctx = document.getElementById('weeklyChart').getContext('2d');
-
-            if (weeklyChartInstance) {
-                weeklyChartInstance.destroy();
-            }
-
-            weeklyChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: weeklyLabels,
-                    datasets: [
-                        {
-                            label: 'Število ponovitev na teden (7 dni)',
-                            data: weeklyData.flat(), // Flatten the array to show data for each day
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Max set (tedensko)',
-                            data: weeklyMaxSets,
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                            borderWidth: 1
-                        }
-                    ]
+    const weeklyChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: weeklyLabels,
+            datasets: [
+                {
+                    label: 'Število ponovitev na teden (7 dni)',
+                    data: weeklyData.flat(), // Flatten the array to show data for each day
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 1
                 },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
+                {
+                    label: 'Max set (tedensko)',
+                    data: weeklyMaxSets,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderWidth: 1
                 }
-            });
-        }
-
-        // Prikaz mesečnega grafa (prikaz za vsak dan v mesecu)
-        let monthlyChartInstance = null;
-
-        function updateMonthlyChart() {
-            const { monthlyData, monthlyLabels, monthlyMaxSets } = getMonthlyData();
-            const ctx = document.getElementById('monthlyChart').getContext('2d');
-
-            if (monthlyChartInstance) {
-                monthlyChartInstance.destroy();
+            ]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
             }
-
-            monthlyChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: monthlyLabels,
-                    datasets: [
-                        {
-                            label: 'Število ponovitev na mesec',
-                            data: monthlyData,
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Max set (mesečno)',
-                            data: monthlyMaxSets,
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
         }
+    });
+}
 
-        // Nalaganje podatkov ob nalaganju strani
-        window.onload = function() {
-            loadStatsData();
-        };
-    </script>
+// Priprava in nalaganje podatkov
+let exerciseData = {}; // Zbirka podatkov za vsak datum
+window.onload = loadData;
+</script>
+
 </body>
 </html>
-
