@@ -5,12 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Statistika sklec</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
-        .container { width: 80%; margin: auto; }
-        button { margin: 10px; padding: 10px; cursor: pointer; }
-        canvas { max-width: 100%; }
-    </style>
+    <link rel="stylesheet" href="styles.css">  <!-- Povezava na styles.css -->
 </head>
 <body>
     <div class="container">
@@ -22,6 +17,10 @@
         <p>Povprečno na dan: <span id="average">0</span></p>
         <p>Največ v enem dnevu: <span id="max">0</span></p>
         <canvas id="statsChart"></canvas>
+        
+        <!-- Gumb za domov -->
+        <br>
+        <a href="index.html" class="home-btn">Domov</a>
     </div>
     
     <script>
@@ -55,3 +54,4 @@
     </script>
 </body>
 </html>
+
