@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stats</title>
+    <title>Statistika vadbe</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        #exerciseChart {
+        #weeklyChart, #monthlyChart {
             width: 100%;
             height: 400px;
         }
@@ -18,7 +18,8 @@
     <p>Total Reps: <span id="totalReps">0</span></p>
     <p>Average per Day: <span id="averagePerDay">0</span></p>
     
-    <canvas id="exerciseChart"></canvas>
+    <canvas id="weeklyChart"></canvas>
+    <canvas id="monthlyChart"></canvas>
 
     <button onclick="window.location.href='index.html'">Domov</button>
 
@@ -32,7 +33,8 @@
                 exerciseData = JSON.parse(savedData);
                 console.log('Loaded exercise data:', exerciseData);
                 updateStatistics();
-                updateChart();
+                updateWeeklyChart();
+                updateMonthlyChart();
             } else {
                 console.log('No data found in localStorage.');
             }
@@ -54,29 +56,157 @@
             document.getElementById('averagePerDay').textContent = averageRepsPerDay.toFixed(2);
         }
 
-        // Posodobi graf
-        let chartInstance = null;
+        // Pripravi tedenske podatke (ponedeljek - petek)
+        function getWeeklyData() {
+            let weeklyData = [];
+            let weeklyLabels = [];
+            let weeklyMaxSets = [];
+            
+            let currentWeekData = [];
+            let currentMaxSet = 0;
+            let currentWeekStart = null;
 
-        function updateChart() {
-            const ctx = document.getElementById('exerciseChart').getContext('2d');
-            const labels = Object.keys(exerciseData);
-            const data = Object.values(exerciseData).map(data => data.totalReps);
+            Object.keys(exerciseData).forEach(date => {
+                const day = new Date(date);
+                const weekStart = day.getDate() - day.getDay(); // Ponedeljek za trenutni teden
 
-            if (chartInstance) {
-                chartInstance.destroy();
+                if (!currentWeekStart || currentWeekStart !== weekStart) {
+                    if (currentWeekData.length > 0) {
+                        weeklyData.push(currentWeekData.reduce((acc, data) => acc + data, 0));
+                        weeklyMaxSets.push(currentMaxSet);
+                    }
+                    currentWeekData = [exerciseData[date].totalReps];
+                    currentMaxSet = Math.max(...exerciseData[date].maxSets);
+                    currentWeekStart = weekStart;
+                } else {
+                    currentWeekData.push(exerciseData[date].totalReps);
+                    currentMaxSet = Math.max(currentMaxSet, ...exerciseData[date].maxSets);
+                }
+
+                const formattedDate = `${day.getDate()}-${day.getMonth() + 1}`;
+                weeklyLabels.push(formattedDate);
+            });
+
+            if (currentWeekData.length > 0) {
+                weeklyData.push(currentWeekData.reduce((acc, data) => acc + data, 0));
+                weeklyMaxSets.push(currentMaxSet);
             }
 
-            chartInstance = new Chart(ctx, {
+            return { weeklyData, weeklyLabels, weeklyMaxSets };
+        }
+
+        // Pripravi mesečne podatke
+        function getMonthlyData() {
+            let monthlyData = [];
+            let monthlyLabels = [];
+            let monthlyMaxSets = [];
+            
+            let currentMonthData = [];
+            let currentMaxSet = 0;
+            let currentMonthStart = null;
+
+            Object.keys(exerciseData).forEach(date => {
+                const day = new Date(date);
+                const monthStart = day.getMonth(); // Mesec za trenutni mesec
+
+                if (currentMonthStart !== monthStart) {
+                    if (currentMonthData.length > 0) {
+                        monthlyData.push(currentMonthData.reduce((acc, data) => acc + data, 0));
+                        monthlyMaxSets.push(currentMaxSet);
+                    }
+                    currentMonthData = [exerciseData[date].totalReps];
+                    currentMaxSet = Math.max(...exerciseData[date].maxSets);
+                    currentMonthStart = monthStart;
+                } else {
+                    currentMonthData.push(exerciseData[date].totalReps);
+                    currentMaxSet = Math.max(currentMaxSet, ...exerciseData[date].maxSets);
+                }
+
+                const formattedDate = `${day.getMonth() + 1}-${day.getFullYear()}`;
+                monthlyLabels.push(formattedDate);
+            });
+
+            if (currentMonthData.length > 0) {
+                monthlyData.push(currentMonthData.reduce((acc, data) => acc + data, 0));
+                monthlyMaxSets.push(currentMaxSet);
+            }
+
+            return { monthlyData, monthlyLabels, monthlyMaxSets };
+        }
+
+        // Prikaz tedenskega grafa
+        let weeklyChartInstance = null;
+
+        function updateWeeklyChart() {
+            const { weeklyData, weeklyLabels, weeklyMaxSets } = getWeeklyData();
+            const ctx = document.getElementById('weeklyChart').getContext('2d');
+
+            if (weeklyChartInstance) {
+                weeklyChartInstance.destroy();
+            }
+
+            weeklyChartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Število ponovitev na dan',
-                        data: data,
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderWidth: 1
-                    }]
+                    labels: weeklyLabels,
+                    datasets: [
+                        {
+                            label: 'Število ponovitev na teden',
+                            data: weeklyData,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Max set (tedensko)',
+                            data: weeklyMaxSets,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Prikaz mesečnega grafa
+        let monthlyChartInstance = null;
+
+        function updateMonthlyChart() {
+            const { monthlyData, monthlyLabels, monthlyMaxSets } = getMonthlyData();
+            const ctx = document.getElementById('monthlyChart').getContext('2d');
+
+            if (monthlyChartInstance) {
+                monthlyChartInstance.destroy();
+            }
+
+            monthlyChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: monthlyLabels,
+                    datasets: [
+                        {
+                            label: 'Število ponovitev na mesec',
+                            data: monthlyData,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Max set (mesečno)',
+                            data: monthlyMaxSets,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderWidth: 1
+                        }
+                    ]
                 },
                 options: {
                     scales: {
