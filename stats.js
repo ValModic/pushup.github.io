@@ -1,3 +1,10 @@
+const rawData = localStorage.getItem('pushupData');
+console.log('Pushup data from localStorage:', rawData); // Preveri, če so podatki prisotni
+
+const pushupData = rawData ? JSON.parse(rawData) : [];
+console.log('Parsed pushup data:', pushupData); // Preveri, ali so podatki pravilno razčlenjeni
+
+
 // Pridobitev podatkov iz localStorage
 const rawData = localStorage.getItem('pushupData');
 const pushupData = rawData ? JSON.parse(rawData) : [];
