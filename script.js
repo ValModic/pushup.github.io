@@ -190,3 +190,4 @@ function savePushups(count) {
     pushupData.push({ date: today, count });
     localStorage.setItem('pushupData', JSON.stringify(pushupData));
 }
+console.log(localStorage.getItem('pushupData'));
