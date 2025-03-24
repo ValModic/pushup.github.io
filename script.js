@@ -190,3 +190,10 @@ function savePushups(count) {
     pushupData.push({ date: today, count });
     localStorage.setItem('pushupData', JSON.stringify(pushupData));
 }
+const pushupData = JSON.parse(localStorage.getItem('pushupData')) || [];
+const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
+
+function savePushups(count) {
+    pushupData.push({ date: today, count });
+    localStorage.setItem('pushupData', JSON.stringify(pushupData));
+}
