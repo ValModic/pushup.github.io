@@ -41,18 +41,19 @@ const weeklyCounts = weeklyLabels.map(label => weeklyData[label]);
 const monthlyLabels = Object.keys(monthlyData).sort();
 const monthlyCounts = monthlyLabels.map(label => monthlyData[label]);
 
-// Ustvarjanje grafov
+// Ustvarjanje tedenskega grafa
 const ctxWeekly = document.getElementById('weeklyChart').getContext('2d');
 const weeklyChart = new Chart(ctxWeekly, {
-    type: 'bar',
+    type: 'line',
     data: {
         labels: weeklyLabels,
         datasets: [{
             label: 'Število sklec na teden',
             data: weeklyCounts,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
             borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            fill: true,
+            tension: 0.4
         }]
     },
     options: {
@@ -74,17 +75,19 @@ const weeklyChart = new Chart(ctxWeekly, {
     }
 });
 
+// Ustvarjanje mesečnega grafa
 const ctxMonthly = document.getElementById('monthlyChart').getContext('2d');
 const monthlyChart = new Chart(ctxMonthly, {
-    type: 'bar',
+    type: 'line',
     data: {
         labels: monthlyLabels,
         datasets: [{
             label: 'Število sklec na mesec',
             data: monthlyCounts,
-            backgroundColor: 'rgba(153, 102, 255, 0.2)',
             borderColor: 'rgba(153, 102, 255, 1)',
-            borderWidth: 1
+            backgroundColor: 'rgba(153, 102, 255, 0.2)',
+            fill: true,
+            tension: 0.4
         }]
     },
     options: {
@@ -105,3 +108,4 @@ const monthlyChart = new Chart(ctxMonthly, {
         }
     }
 });
+
