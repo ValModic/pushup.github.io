@@ -1,33 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Statistics</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Statistika sklec</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Push-Up Statistics</h1>
-    <div id="stats">
-        <p>Total Push-Ups: <span id="total">0</span></p>
-        <p>Best Session: <span id="best">0</span></p>
-        <p>Average per Session: <span id="average">0</span></p>
-    </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            let pushupData = JSON.parse(localStorage.getItem("pushupStats")) || [];
-            
-            if (pushupData.length > 0) {
-                let total = pushupData.reduce((sum, session) => sum + session, 0);
-                let best = Math.max(...pushupData);
-                let average = (total / pushupData.length).toFixed(2);
-                
-                document.getElementById("total").textContent = total;
-                document.getElementById("best").textContent = best;
-                document.getElementById("average").textContent = average;
-            }
-        });
-    </script>
+    <h1>Statistika sklec</h1>
+    
+    <h2>Tedenska statistika</h2>
+    <canvas id="weeklyChart"></canvas>
+    
+    <h2>Mesečna statistika</h2>
+    <canvas id="monthlyChart"></canvas>
+    
+    <script src="stats.js"></script>
 </body>
 </html>
-
