@@ -115,7 +115,7 @@ function getWeeklyComparisonData() {
     let weeks = {};
     Object.keys(exerciseData).forEach(date => {
         const day = new Date(date);
-        const week = `Teden ${weekNum}`;
+        const week = `Teden ${Math.ceil(new Date(date).getDate() / 7)}`;
         if (!weeks[week]) weeks[week] = { totalReps: 0, maxSet: 0 };
         weeks[week].totalReps += exerciseData[date].totalReps || 0;
         weeks[week].maxSet = Math.max(weeks[week].maxSet, ...exerciseData[date].maxSets || [0]);
@@ -132,7 +132,8 @@ function getWeeklyComparisonData() {
 function getMonthlyComparisonData() {
     let labels = [], totals = [], maxSets = [];
     for (let i = 1; i <= 12; i++) {
-        labels.push(`Mesec ${i}`);
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun', 'Jul', 'Avg', 'Sep', 'Okt', 'Nov', 'Dec'];
+        labels.push(monthNames[i - 1]);
         let monthData = Object.keys(exerciseData).filter(date => new Date(date).getMonth() + 1 === i).map(date => exerciseData[date]);
         totals.push(monthData.reduce((sum, d) => sum + (d.totalReps || 0), 0));
         maxSets.push(Math.max(...monthData.map(d => Math.max(...(d.maxSets || [0]))), 0));
@@ -144,4 +145,3 @@ window.onload = loadData;
 </script>
 </body>
 </html>
-
