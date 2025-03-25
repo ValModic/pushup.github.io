@@ -16,10 +16,8 @@
     <div class="stats-container">
         <p>Skupaj ponovitev: <span id="totalReps">0</span></p>
         <p>Povprečje na dan: <span id="averagePerDay">0</span></p>
-    <p>Ta teden: <span id="weeklyReps">0</span></p>
-        <p>Povprečje v tem tednu: <span id="weeklyAverage">0</span></p>
-        <p>Največji max set: <span id="maxSetAllTime">0</span></p>
     </div>
+
     <div class="chart-container">
         <h2>Mesečna statistika</h2>
         <canvas id="monthlyChart"></canvas>
@@ -54,30 +52,6 @@ function loadData() {
 }
 
 function updateStatistics() {
-    let totalReps = 0;
-    let totalDays = Object.keys(exerciseData).length;
-    let weeklyReps = 0;
-    let maxSetAllTime = 0;
-    
-    const today = new Date();
-    const monday = new Date(today);
-    monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
-    
-    Object.keys(exerciseData).forEach(date => {
-        totalReps += exerciseData[date].totalReps || 0;
-        maxSetAllTime = Math.max(maxSetAllTime, ...exerciseData[date].maxSets || [0]);
-        
-        const entryDate = new Date(date);
-        if (entryDate >= monday && entryDate <= today) {
-            weeklyReps += exerciseData[date].totalReps || 0;
-        }
-    });
-    
-    document.getElementById('totalReps').textContent = totalReps;
-    document.getElementById('averagePerDay').textContent = totalDays > 0 ? (totalReps / totalDays).toFixed(2) : 0;
-    document.getElementById('weeklyReps').textContent = weeklyReps;
-    document.getElementById('weeklyAverage').textContent = (weeklyReps / 7).toFixed(2);
-    document.getElementById('maxSetAllTime').textContent = maxSetAllTime;
     let totalReps = 0;
     let totalDays = Object.keys(exerciseData).length;
     Object.values(exerciseData).forEach(data => totalReps += data.totalReps || 0);
