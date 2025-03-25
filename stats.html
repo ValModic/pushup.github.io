@@ -60,7 +60,7 @@ function updateStatistics() {
 }
 
 function updateCharts() {
-    createChart('monthlyChart', getMonthlyData(), 'Mesečna statistika');
+    createChart('monthlyChart', getDailyMonthlyData(), 'Mesečna statistika');
     createChart('weeklyChart', getWeeklyData(), 'Tedenska statistika');
     createChart('weeklyComparisonChart', getWeeklyComparisonData(), 'Primerjava tednov');
     createChart('monthlyComparisonChart', getMonthlyComparisonData(), 'Primerjava mesecev');
@@ -81,7 +81,55 @@ function createChart(canvasId, data, label) {
     });
 }
 
-function getMonthlyData() {
+function getDailyMonthlyData() {
+    let labels = [], totals = [], maxSets = [];
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    for (let i = 1; i <= 31; i++) {
+        const dateStr = new Date(today.getFullYear(), currentMonth, i).toISOString().split('T')[0];
+        labels.push(i);
+        totals.push(exerciseData[dateStr] ? exerciseData[dateStr].totalReps : 0);
+        maxSets.push(exerciseData[dateStr] ? Math.max(...(exerciseData[dateStr].maxSets || [0])) : 0);
+    }
+    return { labels, totals, maxSets };
+}
+
+function getWeeklyData() {
+    let labels = ['Pon', 'Tor', 'Sre', 'Čet', 'Pet', 'Sob', 'Ned'], totals = [], maxSets = [];
+    const today = new Date();
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+    for (let i = 0; i < 7; i++) {
+        const date = new Date(monday);
+        date.setDate(monday.getDate() + i);
+        const dateStr = date.toISOString().split('T')[0];
+        totals.push(exerciseData[dateStr] ? exerciseData[dateStr].totalReps : 0);
+        maxSets.push(exerciseData[dateStr] ? Math.max(...(exerciseData[dateStr].maxSets || [0])) : 0);
+    }
+    return { labels, totals, maxSets };
+}
+
+function getWeeklyComparisonData() {
+    let labels = [], totals = [], maxSets = [];
+    let weekNum = 1;
+    let weeks = {};
+    Object.keys(exerciseData).forEach(date => {
+        const day = new Date(date);
+        const week = `Teden ${weekNum}`;
+        if (!weeks[week]) weeks[week] = { totalReps: 0, maxSet: 0 };
+        weeks[week].totalReps += exerciseData[date].totalReps || 0;
+        weeks[week].maxSet = Math.max(weeks[week].maxSet, ...exerciseData[date].maxSets || [0]);
+        if (day.getDay() === 0) weekNum++;
+    });
+    Object.keys(weeks).forEach(week => {
+        labels.push(week);
+        totals.push(weeks[week].totalReps);
+        maxSets.push(weeks[week].maxSet);
+    });
+    return { labels, totals, maxSets };
+}
+
+function getMonthlyComparisonData() {
     let labels = [], totals = [], maxSets = [];
     for (let i = 1; i <= 12; i++) {
         labels.push(`Mesec ${i}`);
@@ -92,38 +140,8 @@ function getMonthlyData() {
     return { labels, totals, maxSets };
 }
 
-function getWeeklyData() {
-    let labels = [], totals = [], maxSets = [];
-    const today = new Date();
-    for (let i = 6; i >= 0; i--) {
-        const date = new Date();
-        date.setDate(today.getDate() - i);
-        const dateStr = date.toISOString().split('T')[0];
-        labels.push(date.toLocaleDateString('sl-SI', { weekday: 'short' }));
-        totals.push(exerciseData[dateStr] ? exerciseData[dateStr].totalReps : 0);
-        maxSets.push(exerciseData[dateStr] ? Math.max(...(exerciseData[dateStr].maxSets || [0])) : 0);
-    }
-    return { labels, totals, maxSets };
-}
-
-function getWeeklyComparisonData() {
-    let labels = [], totals = [], maxSets = [];
-    let weeks = {};
-    Object.keys(exerciseData).forEach(date => {
-        const week = `${new Date(date).getFullYear()}-W${Math.ceil(new Date(date).getDate() / 7)}`;
-        if (!weeks[week]) weeks[week] = { totalReps: 0, maxSet: 0 };
-        weeks[week].totalReps += exerciseData[date].totalReps || 0;
-        weeks[week].maxSet = Math.max(weeks[week].maxSet, ...exerciseData[date].maxSets || [0]);
-    });
-    Object.keys(weeks).forEach(week => {
-        labels.push(week);
-        totals.push(weeks[week].totalReps);
-        maxSets.push(weeks[week].maxSet);
-    });
-    return { labels, totals, maxSets };
-}
-
 window.onload = loadData;
 </script>
 </body>
 </html>
+
