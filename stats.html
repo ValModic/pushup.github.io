@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Statistika - Pushup</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -13,13 +13,13 @@
     <h1>Statistika sklecev</h1>
 
     <button class="domov" onclick="window.location.href='index.html'">Domov</button>
- <div class="stats-container">
-    <p>Skupaj ponovitev: <span id="totalReps">0</span></p>
-    <p>Povprečje na dan: <span id="averagePerDay">0</span></p>
-</div>
+    <div class="stats-container">
+        <p>Skupaj ponovitev: <span id="totalReps">0</span></p>
+        <p>Povprečje na dan: <span id="averagePerDay">0</span></p>
+    </div>
 
     <div class="chart-container">
-        <h2>Mesecna statistika</h2>
+        <h2>Mesečna statistika</h2>
         <canvas id="monthlyChart"></canvas>
     </div>
 
@@ -31,176 +31,94 @@
 </div>
 
 <script>
-// Inicializacija globalnih spremenljivk
-let exerciseData = {}; // Zbirka podatkov za vsak datum
+let exerciseData = {};
 
-// Funkcija za nalaganje podatkov iz localStorage
 function loadData() {
     const savedData = localStorage.getItem('exerciseData');
     if (savedData) {
         exerciseData = JSON.parse(savedData);
-        console.log("Podatki iz localStorage: ", exerciseData); // Preveri podatke
         updateStatistics();
         updateMonthlyChart();
         updateWeeklyChart();
-    } else {
-        console.log("Ni podatkov v localStorage!"); // Ni podatkov
     }
 }
 
-// Funkcija za pridobivanje mesečnih podatkov
 function getMonthlyData() {
     let monthlyData = [];
     let monthlyLabels = [];
-    let monthlyMaxSets = [];
-    
-    const months = {};
+    const today = new Date();
+    const currentMonth = today.getMonth();
 
-    Object.keys(exerciseData).forEach(date => {
-        const day = new Date(date);
-        const month = day.getMonth(); // Mesec (0 - januar, 1 - februar, ...)
-
-        if (!months[month]) {
-            months[month] = { totalReps: 0, maxSets: [] };
+    for (let i = 1; i <= 31; i++) {
+        const dateStr = new Date(today.getFullYear(), currentMonth, i).toISOString().split('T')[0];
+        if (exerciseData[dateStr]) {
+            monthlyData.push(exerciseData[dateStr].totalReps);
+        } else {
+            monthlyData.push(0);
         }
-
-        months[month].totalReps += exerciseData[date].totalReps;
-        months[month].maxSets.push(...exerciseData[date].maxSets);
-    });
-
-    for (const month in months) {
-        monthlyData.push(months[month].totalReps);
-        monthlyMaxSets.push(Math.max(...months[month].maxSets));
-        monthlyLabels.push(`Mesec ${parseInt(month) + 1}`);
+        monthlyLabels.push(i);
     }
-
-    console.log("Mesečni podatki: ", monthlyData); // Preveri mesečne podatke
-    return { monthlyData, monthlyLabels, monthlyMaxSets };
+    return { monthlyData, monthlyLabels };
 }
 
-// Funkcija za prikaz mesečnega grafa
 function updateMonthlyChart() {
-    const { monthlyData, monthlyLabels, monthlyMaxSets } = getMonthlyData();
-    if (monthlyData.length === 0) {
-        console.log("Ni mesečnih podatkov za prikaz!");
-        return;
-    }
-
+    const { monthlyData, monthlyLabels } = getMonthlyData();
     const ctx = document.getElementById('monthlyChart').getContext('2d');
-    const monthlyChart = new Chart(ctx, {
-        type: 'line',
+    new Chart(ctx, {
+        type: 'bar',
         data: {
             labels: monthlyLabels,
-            datasets: [
-                {
-                    label: 'Število ponovitev na mesec',
-                    data: monthlyData,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderWidth: 1
-                },
-                {
-                    label: 'Max set (mesečno)',
-                    data: monthlyMaxSets,
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    borderWidth: 1
-                }
-            ]
+            datasets: [{
+                label: 'Ponovitve na dan',
+                data: monthlyData,
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
         },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
+        options: { scales: { y: { beginAtZero: true } } }
     });
 }
 
-// Funkcija za pridobivanje tedenskih podatkov (7 dni v tednu)
 function getWeeklyData() {
     let weeklyData = [];
     let weeklyLabels = [];
-    let weeklyMaxSets = [];
+    const today = new Date();
     
-    let currentWeekData = [];
-    let currentMaxSet = 0;
-    let currentWeekStart = null;
-    let currentWeekLabel = null;
-
-    Object.keys(exerciseData).forEach(date => {
-        const day = new Date(date);
-        const weekStart = day.getDate() - day.getDay(); // Ponedeljek za trenutni teden
-
-        if (!currentWeekStart || currentWeekStart !== weekStart) {
-            if (currentWeekData.length > 0) {
-                // Dodaj podatke za prejšnji teden
-                weeklyData.push(currentWeekData.reduce((a, b) => a + b, 0)); // Seštej vse ponovitve v tednu
-                weeklyMaxSets.push(currentMaxSet); // Max set tega tedna
-                weeklyLabels.push(currentWeekLabel);
-            }
-            currentWeekStart = weekStart;
-            currentMaxSet = 0;
-            currentWeekData = [];
-            currentWeekLabel = `Teden ${Math.ceil(day.getDate() / 7)}`;
+    for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(today.getDate() - i);
+        const dateStr = date.toISOString().split('T')[0];
+        
+        if (exerciseData[dateStr]) {
+            weeklyData.push(exerciseData[dateStr].totalReps);
+        } else {
+            weeklyData.push(0);
         }
-
-        currentWeekData.push(exerciseData[date].totalReps);
-        currentMaxSet = Math.max(currentMaxSet, ...exerciseData[date].maxSets);
-    });
-
-    if (currentWeekData.length > 0) {
-        weeklyData.push(currentWeekData.reduce((a, b) => a + b, 0)); // Dodaj zadnji teden
-        weeklyMaxSets.push(currentMaxSet);
-        weeklyLabels.push(currentWeekLabel);
+        weeklyLabels.push(date.toLocaleDateString('sl-SI', { weekday: 'short' }));
     }
-
-    console.log("Tedenski podatki: ", weeklyData); // Preveri tedenske podatke
-    return { weeklyData, weeklyLabels, weeklyMaxSets };
+    return { weeklyData, weeklyLabels };
 }
 
-// Funkcija za prikaz tedenskega grafa
 function updateWeeklyChart() {
-    const { weeklyData, weeklyLabels, weeklyMaxSets } = getWeeklyData();
-    if (weeklyData.length === 0) {
-        console.log("Ni tedenskih podatkov za prikaz!");
-        return;
-    }
-
+    const { weeklyData, weeklyLabels } = getWeeklyData();
     const ctx = document.getElementById('weeklyChart').getContext('2d');
-    const weeklyChart = new Chart(ctx, {
+    new Chart(ctx, {
         type: 'line',
         data: {
             labels: weeklyLabels,
-            datasets: [
-                {
-                    label: 'Število ponovitev na teden',
-                    data: weeklyData,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderWidth: 1
-                },
-                {
-                    label: 'Max set (tedensko)',
-                    data: weeklyMaxSets,
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    borderWidth: 1
-                }
-            ]
+            datasets: [{
+                label: 'Ponovitve na dan',
+                data: weeklyData,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderWidth: 1
+            }]
         },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
+        options: { scales: { y: { beginAtZero: true } } }
     });
 }
 
-// Funkcija za posodobitev statistike na strani (povprečje itd.)
 function updateStatistics() {
     let totalReps = 0;
     let totalDays = 0;
@@ -215,9 +133,7 @@ function updateStatistics() {
     document.getElementById('averagePerDay').textContent = averageRepsPerDay.toFixed(2);
 }
 
-// Naloži podatke ob nalaganju strani
 window.onload = loadData;
-
 </script>
 </body>
 </html>
