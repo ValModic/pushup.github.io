@@ -161,11 +161,11 @@ canvas {
     box-shadow: 0 0 5px rgba(72, 172, 85, 0.8); /* Mehka senca okoli gumba ob klikih */
 }
 domov {
-    height: 50px; /* Poveča višino gumba */
-    font-size: 18px; /* Poveča velikost pisave */
-    margin: 15px 0; /* Doda razmik nad in pod gumbom */
-    padding: 10px 20px; /* Doda notranji odmik za boljši izgled */
+    height: 60px; /* Poveča višino gumba */
+    font-size: 20px; /* Poveča velikost pisave */
+    padding: 15px 25px; /* Doda večji notranji odmik */
+    margin-bottom: 30px; /* Doda več razmika med gumbom in statistikami */
 }
 .stats-container {
-    margin-top: 30px; /* Poveča razmik med gumbom in statistikami */
+    margin-top: 50px; /* Poveča razmik med gumbom in statistikami */
 }
