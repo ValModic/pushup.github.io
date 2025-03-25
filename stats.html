@@ -6,6 +6,7 @@
     <title>Statistika - Pushup</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
 </head>
 <body>
 
@@ -37,124 +38,7 @@
         <h2>Primerjava mesecev</h2>
         <canvas id="monthlyComparisonChart"></canvas>
     </div>
-
 </div>
 
-<script>
-let exerciseData = {};
-
-function loadData() {
-    const savedData = localStorage.getItem('exerciseData');
-    if (savedData) {
-        exerciseData = JSON.parse(savedData);
-        console.log("Naloženi podatki:", exerciseData);
-        updateStatistics();
-        updateMonthlyChart();
-        updateWeeklyChart();
-        updateWeeklyComparisonChart();
-        updateMonthlyComparisonChart();
-    } else {
-        console.log("Ni podatkov v localStorage.");
-    }
-}
-
-function updateStatistics() {
-    let totalReps = 0;
-    let totalDays = 0;
-    
-    Object.keys(exerciseData).forEach(date => {
-        totalReps += exerciseData[date].totalReps || 0;
-        totalDays++;
-    });
-
-    const averageRepsPerDay = totalDays > 0 ? (totalReps / totalDays).toFixed(2) : 0;
-    document.getElementById('totalReps').textContent = totalReps;
-    document.getElementById('averagePerDay').textContent = averageRepsPerDay;
-}
-
-function getMonthlyData() {
-    let monthlyData = [];
-    let monthlyMax = [];
-    let monthlyLabels = [];
-    const months = {};
-
-    Object.keys(exerciseData).forEach(date => {
-        const day = new Date(date);
-        const month = day.getMonth();
-        if (!months[month]) {
-            months[month] = { totalReps: 0, maxSet: 0 };
-        }
-        months[month].totalReps += exerciseData[date].totalReps || 0;
-        months[month].maxSet = Math.max(months[month].maxSet, ...(exerciseData[date].maxSets || [0]));
-    });
-
-    for (let i = 0; i < 12; i++) {
-        monthlyLabels.push(`Mesec ${i + 1}`);
-        monthlyData.push(months[i] ? months[i].totalReps : 0);
-        monthlyMax.push(months[i] ? months[i].maxSet : 0);
-    }
-
-    return { monthlyData, monthlyMax, monthlyLabels };
-}
-
-function updateMonthlyComparisonChart() {
-    const { monthlyData, monthlyMax, monthlyLabels } = getMonthlyData();
-    const ctx = document.getElementById('monthlyComparisonChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: monthlyLabels,
-            datasets: [
-                { label: 'Skupaj ponovitev', data: monthlyData, backgroundColor: 'rgba(75, 192, 192, 0.5)' },
-                { label: 'Max sklec v setu', data: monthlyMax, backgroundColor: 'rgba(255, 99, 132, 0.5)' }
-            ]
-        },
-        options: { scales: { y: { beginAtZero: true } } }
-    });
-}
-
-function getWeeklyComparisonData() {
-    let weeklyData = [];
-    let weeklyMax = [];
-    let weeklyLabels = [];
-    let weekTotals = {};
-
-    Object.keys(exerciseData).forEach(date => {
-        const day = new Date(date);
-        const week = `${day.getFullYear()}-W${Math.ceil(day.getDate() / 7)}`;
-        if (!weekTotals[week]) {
-            weekTotals[week] = { totalReps: 0, maxSet: 0 };
-        }
-        weekTotals[week].totalReps += exerciseData[date].totalReps || 0;
-        weekTotals[week].maxSet = Math.max(weekTotals[week].maxSet, ...(exerciseData[date].maxSets || [0]));
-    });
-
-    Object.keys(weekTotals).forEach(week => {
-        weeklyLabels.push(week);
-        weeklyData.push(weekTotals[week].totalReps);
-        weeklyMax.push(weekTotals[week].maxSet);
-    });
-
-    return { weeklyData, weeklyMax, weeklyLabels };
-}
-
-function updateWeeklyComparisonChart() {
-    const { weeklyData, weeklyMax, weeklyLabels } = getWeeklyComparisonData();
-    const ctx = document.getElementById('weeklyComparisonChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: weeklyLabels,
-            datasets: [
-                { label: 'Skupaj ponovitev', data: weeklyData, backgroundColor: 'rgba(75, 192, 192, 0.5)' },
-                { label: 'Max sklec v setu', data: weeklyMax, backgroundColor: 'rgba(255, 99, 132, 0.5)' }
-            ]
-        },
-        options: { scales: { y: { beginAtZero: true } } }
-    });
-}
-
-window.onload = loadData;
-</script>
 </body>
 </html>
