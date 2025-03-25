@@ -84,10 +84,13 @@ function getWeeklyData() {
     let weeklyData = [];
     let weeklyLabels = [];
     const today = new Date();
-    
-    for (let i = 6; i >= 0; i--) {
-        const date = new Date();
-        date.setDate(today.getDate() - i);
+    const dayOfWeek = today.getDay(); // 0 = nedelja, 1 = ponedeljek, ...
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1)); // Dobimo ponedeljek
+
+    for (let i = 0; i < 7; i++) {
+        const date = new Date(monday);
+        date.setDate(monday.getDate() + i);
         const dateStr = date.toISOString().split('T')[0];
         
         if (exerciseData[dateStr]) {
@@ -137,3 +140,4 @@ window.onload = loadData;
 </script>
 </body>
 </html>
+
