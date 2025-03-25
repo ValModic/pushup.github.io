@@ -166,3 +166,6 @@ domov {
     margin: 15px 0; /* Doda razmik nad in pod gumbom */
     padding: 10px 20px; /* Doda notranji odmik za boljši izgled */
 }
+.stats-container {
+    margin-top: 30px; /* Poveča razmik med gumbom in statistikami */
+}
