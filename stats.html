@@ -73,6 +73,29 @@ function createChart(canvasId, data, label) {
         data: {
             labels: data.labels,
             datasets: [
+                { 
+                    type: 'bar',
+                    label: 'Skupaj ponovitev', 
+                    data: data.totals, 
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                },
+                { 
+                    type: 'line',
+                    label: 'Max set', 
+                    data: data.maxSets, 
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderWidth: 2,
+                    pointRadius: 5,
+                    fill: false
+                }
+            ]
+        },
+        data: {
+            labels: data.labels,
+            datasets: [
                 { label: 'Skupaj ponovitev', data: data.totals, backgroundColor: 'rgba(75, 192, 192, 0.5)' },
                 { label: 'Max set', data: data.maxSets, backgroundColor: 'rgba(255, 99, 132, 0.5)' }
             ]
