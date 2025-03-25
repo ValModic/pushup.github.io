@@ -28,6 +28,16 @@
         <canvas id="weeklyChart"></canvas>
     </div>
 
+    <div class="chart-container">
+        <h2>Primerjava tednov</h2>
+        <canvas id="weeklyComparisonChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h2>Primerjava mesecev</h2>
+        <canvas id="monthlyComparisonChart"></canvas>
+    </div>
+
 </div>
 
 <script>
@@ -40,104 +50,94 @@ function loadData() {
         updateStatistics();
         updateMonthlyChart();
         updateWeeklyChart();
+        updateWeeklyComparisonChart();
+        updateMonthlyComparisonChart();
     }
 }
 
 function getMonthlyData() {
     let monthlyData = [];
+    let monthlyMax = [];
     let monthlyLabels = [];
-    const today = new Date();
-    const currentMonth = today.getMonth();
+    const months = {};
 
-    for (let i = 1; i <= 31; i++) {
-        const dateStr = new Date(today.getFullYear(), currentMonth, i).toISOString().split('T')[0];
-        if (exerciseData[dateStr]) {
-            monthlyData.push(exerciseData[dateStr].totalReps);
-        } else {
-            monthlyData.push(0);
+    Object.keys(exerciseData).forEach(date => {
+        const day = new Date(date);
+        const month = day.getMonth();
+        if (!months[month]) {
+            months[month] = { totalReps: 0, maxSet: 0 };
         }
-        monthlyLabels.push(i);
+        months[month].totalReps += exerciseData[date].totalReps;
+        months[month].maxSet = Math.max(months[month].maxSet, ...exerciseData[date].maxSets);
+    });
+
+    for (let i = 0; i < 12; i++) {
+        monthlyLabels.push(`Mesec ${i + 1}`);
+        monthlyData.push(months[i] ? months[i].totalReps : 0);
+        monthlyMax.push(months[i] ? months[i].maxSet : 0);
     }
-    return { monthlyData, monthlyLabels };
+
+    return { monthlyData, monthlyMax, monthlyLabels };
 }
 
-function updateMonthlyChart() {
-    const { monthlyData, monthlyLabels } = getMonthlyData();
-    const ctx = document.getElementById('monthlyChart').getContext('2d');
+function updateMonthlyComparisonChart() {
+    const { monthlyData, monthlyMax, monthlyLabels } = getMonthlyData();
+    const ctx = document.getElementById('monthlyComparisonChart').getContext('2d');
     new Chart(ctx, {
         type: 'bar',
         data: {
             labels: monthlyLabels,
-            datasets: [{
-                label: 'Ponovitve na dan',
-                data: monthlyData,
-                backgroundColor: 'rgba(75, 192, 192, 0.5)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }]
+            datasets: [
+                { label: 'Skupaj ponovitev', data: monthlyData, backgroundColor: 'rgba(75, 192, 192, 0.5)' },
+                { label: 'Max sklec v setu', data: monthlyMax, backgroundColor: 'rgba(255, 99, 132, 0.5)' }
+            ]
         },
         options: { scales: { y: { beginAtZero: true } } }
     });
 }
 
-function getWeeklyData() {
+function getWeeklyComparisonData() {
     let weeklyData = [];
+    let weeklyMax = [];
     let weeklyLabels = [];
-    const today = new Date();
-    const dayOfWeek = today.getDay(); // 0 = nedelja, 1 = ponedeljek, ...
-    const monday = new Date(today);
-    monday.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1)); // Dobimo ponedeljek
+    let weekTotals = {};
 
-    for (let i = 0; i < 7; i++) {
-        const date = new Date(monday);
-        date.setDate(monday.getDate() + i);
-        const dateStr = date.toISOString().split('T')[0];
-        
-        if (exerciseData[dateStr]) {
-            weeklyData.push(exerciseData[dateStr].totalReps);
-        } else {
-            weeklyData.push(0);
+    Object.keys(exerciseData).forEach(date => {
+        const day = new Date(date);
+        const week = `${day.getFullYear()}-W${Math.ceil(day.getDate() / 7)}`;
+        if (!weekTotals[week]) {
+            weekTotals[week] = { totalReps: 0, maxSet: 0 };
         }
-        weeklyLabels.push(date.toLocaleDateString('sl-SI', { weekday: 'short' }));
-    }
-    return { weeklyData, weeklyLabels };
+        weekTotals[week].totalReps += exerciseData[date].totalReps;
+        weekTotals[week].maxSet = Math.max(weekTotals[week].maxSet, ...exerciseData[date].maxSets);
+    });
+
+    Object.keys(weekTotals).forEach(week => {
+        weeklyLabels.push(week);
+        weeklyData.push(weekTotals[week].totalReps);
+        weeklyMax.push(weekTotals[week].maxSet);
+    });
+
+    return { weeklyData, weeklyMax, weeklyLabels };
 }
 
-function updateWeeklyChart() {
-    const { weeklyData, weeklyLabels } = getWeeklyData();
-    const ctx = document.getElementById('weeklyChart').getContext('2d');
+function updateWeeklyComparisonChart() {
+    const { weeklyData, weeklyMax, weeklyLabels } = getWeeklyComparisonData();
+    const ctx = document.getElementById('weeklyComparisonChart').getContext('2d');
     new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: {
             labels: weeklyLabels,
-            datasets: [{
-                label: 'Ponovitve na dan',
-                data: weeklyData,
-                borderColor: 'rgba(255, 99, 132, 1)',
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderWidth: 1
-            }]
+            datasets: [
+                { label: 'Skupaj ponovitev', data: weeklyData, backgroundColor: 'rgba(75, 192, 192, 0.5)' },
+                { label: 'Max sklec v setu', data: weeklyMax, backgroundColor: 'rgba(255, 99, 132, 0.5)' }
+            ]
         },
         options: { scales: { y: { beginAtZero: true } } }
     });
-}
-
-function updateStatistics() {
-    let totalReps = 0;
-    let totalDays = 0;
-    
-    Object.values(exerciseData).forEach(data => {
-        totalReps += data.totalReps;
-        totalDays++;
-    });
-
-    const averageRepsPerDay = totalDays > 0 ? totalReps / totalDays : 0;
-    document.getElementById('totalReps').textContent = totalReps;
-    document.getElementById('averagePerDay').textContent = averageRepsPerDay.toFixed(2);
 }
 
 window.onload = loadData;
 </script>
 </body>
 </html>
-
