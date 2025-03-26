@@ -169,8 +169,25 @@ function createChart(canvasId, data, label) {
                 { label: 'Max set', data: data.maxSets, backgroundColor: 'rgba(255, 99, 132, 0.5)' }
             ]
         },
-      options: { scales: { y: { beginAtZero: true } } }
-    });
+      options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: {
+                    color: 'rgba(255, 255, 255, 0.5)', // Bela barva mreže na Y osi
+                    lineWidth: 1,
+                }
+            },
+            x: {
+                grid: {
+                    color: 'rgba(255, 255, 255, 0.5)', // Bela barva mreže na X osi
+                    lineWidth: 1,
+                }
+            }
+        }
+    }
+});
 }
 
 function getDailyMonthlyData() {
