@@ -6,7 +6,7 @@
 
 body {
     font-family: 'Arial', sans-serif;
-    background-color:  #242634;
+    background-color:  #464A67;
     color: #FFF;
     padding: 20px;
 }
@@ -15,7 +15,7 @@ body {
     max-width: 600px;
     margin: 0 auto;
     padding: 30px;
-    background-color: #242634;
+    background-color: #373A50;
     border-radius: 15px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     text-align: center;
