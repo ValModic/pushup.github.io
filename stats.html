@@ -169,10 +169,23 @@ function createChart(canvasId, data, label) {
                 { label: 'Max set', data: data.maxSets, backgroundColor: 'rgba(255, 99, 132, 0.5)' }
             ]
         },
-        options: { scales: { y: { beginAtZero: true } } }
-    });
+    options: {
+    scales: {
+        y: {
+            beginAtZero: true,
+            grid: {
+                color: 'rgba(200, 200, 200, 0.5)', // Svetlejša barva črtne mreže za Y os
+                lineWidth: 1, // Debelina črt mreže
+            }
+        },
+        x: {
+            grid: {
+                color: 'rgba(200, 200, 200, 0.5)', // Svetlejša barva črtne mreže za X os
+                lineWidth: 1, // Debelina črt mreže
+            }
+        }
+    }
 }
-
 function getDailyMonthlyData() {
     let labels = [], totals = [], maxSets = [];
     const today = new Date();
