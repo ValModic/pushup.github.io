@@ -98,12 +98,12 @@ function removeLastExercise() {
             // Posodobimo graf
             updateChart();
 
-            alert("Zadnji današnji vnos je bil odstranjen.");
+            showTemporaryMessage("Zadnji današnji vnos je bil odstranjen."); // Samodejno obvestilo
         } else {
             showTemporaryMessage("Brisanje preklicano.");
         }
     } else {
-        alert("Danes še ni bilo nobenega vnosa za brisanje.");
+        showTemporaryMessage("Danes še ni bilo nobenega vnosa za brisanje.");
     }
 }
 
@@ -120,12 +120,14 @@ function showTemporaryMessage(message) {
     msgDiv.style.padding = "10px 20px";
     msgDiv.style.borderRadius = "5px";
     msgDiv.style.boxShadow = "0px 4px 6px rgba(0,0,0,0.1)";
+    msgDiv.style.zIndex = "1000";
     document.body.appendChild(msgDiv);
 
     setTimeout(() => {
         msgDiv.remove(); // Po 1.5s se samodejno izbriše
     }, 1500);
 }
+
 
 
 function updateStatistics() {
