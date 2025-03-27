@@ -74,10 +74,11 @@ function removeLastExercise() {
     const lastDate = Object.keys(exerciseData).pop(); // Zadnji datum v podatkih
 
     if (lastDate === today) {
-        showToast(); // Prikaz toast obvestila za potrditev brisanja
-
+        // Prikaz modalnega okna za potrditev
+        showModal();
+        
         // Ko uporabnik potrdi
-        document.getElementById("confirmBtnToast").onclick = function() {
+        document.getElementById("confirmBtn").onclick = function() {
             const lastRepsForDay = setsData.pop();
             totalReps -= lastRepsForDay;
             totalDays--;
@@ -101,28 +102,22 @@ function removeLastExercise() {
             // Posodobimo graf
             updateChart();
 
-            showTemporaryMessage("Zadnji današnji vnos je bil odstranjen.");
-            hideToast(); // Skrij toast po potrditvi
-        };
-
-        // Če uporabnik prekliče
-        document.getElementById("cancelBtnToast").onclick = function() {
-            showTemporaryMessage("Brisanje preklicano.");
-            hideToast(); // Skrij toast po preklicu
+            showTemporaryMessage("Zadnji današnji vnos je bil odstranjen."); // Samodejno obvestilo
+            closeModal(); // Zapri modalno okno
         };
     } else {
         showTemporaryMessage("Danes še ni bilo nobenega vnosa za brisanje.");
     }
 }
 
-function showToast() {
-    const toast = document.getElementById("toast");
-    toast.style.display = "flex";
+function showModal() {
+    const modal = document.getElementById("confirmModal");
+    modal.style.display = "flex";
 }
 
-function hideToast() {
-    const toast = document.getElementById("toast");
-    toast.style.display = "none";
+function closeModal() {
+    const modal = document.getElementById("confirmModal");
+    modal.style.display = "none";
 }
 
 function showTemporaryMessage(message) {
