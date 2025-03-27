@@ -100,11 +100,31 @@ function removeLastExercise() {
 
             alert("Zadnji današnji vnos je bil odstranjen.");
         } else {
-            alert("Brisanje preklicano.");
+            showTemporaryMessage("Brisanje preklicano.");
         }
     } else {
         alert("Danes še ni bilo nobenega vnosa za brisanje.");
     }
+}
+
+// Funkcija za prikaz obvestila, ki izgine po 1.5 sekunde
+function showTemporaryMessage(message) {
+    let msgDiv = document.createElement("div");
+    msgDiv.innerText = message;
+    msgDiv.style.position = "fixed";
+    msgDiv.style.bottom = "20px";
+    msgDiv.style.left = "50%";
+    msgDiv.style.transform = "translateX(-50%)";
+    msgDiv.style.background = "#333";
+    msgDiv.style.color = "#fff";
+    msgDiv.style.padding = "10px 20px";
+    msgDiv.style.borderRadius = "5px";
+    msgDiv.style.boxShadow = "0px 4px 6px rgba(0,0,0,0.1)";
+    document.body.appendChild(msgDiv);
+
+    setTimeout(() => {
+        msgDiv.remove(); // Po 1.5s se samodejno izbriše
+    }, 1500);
 }
 
 
