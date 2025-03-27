@@ -95,32 +95,31 @@ function createChart(canvasId, data, label) {
                 }
             ]
         },
-    options: {
+ options: {
     responsive: true,
     scales: {
         y: {
             beginAtZero: true,
-            suggestedMin: -5, // Podaljša os Y navzdol
             grid: {
-                color: 'rgba(255, 255, 255, 0.5)',
+                color: 'rgba(255, 255, 255, 0.5)', // Vse mrežne črte bele
                 lineWidth: 1
             },
             border: {
-                color: 'white'
+                color: 'white' // Osna črta postane bela
             }
         },
         x: {
-            offset: true, // Premakne prvo oznako in podaljša os X
             grid: {
-                color: 'rgba(255, 255, 255, 0.5)',
+                color: 'rgba(255, 255, 255, 0.5)', // Vse mrežne črte bele
                 lineWidth: 1
             },
             border: {
-                color: 'white'
+                color: 'white' // Osna črta postane bela
             }
         }
     }
 }
+
 
     });
 }
