@@ -74,30 +74,34 @@ function removeLastExercise() {
     const lastDate = Object.keys(exerciseData).pop(); // Zadnji datum v podatkih
 
     if (lastDate === today) {
-        const lastRepsForDay = setsData.pop();
-        totalReps -= lastRepsForDay;
-        totalDays--; 
+        if (confirm("Ali res želiš izbrisati zadnji današnji vnos?")) { // Potrditveno okno
+            const lastRepsForDay = setsData.pop();
+            totalReps -= lastRepsForDay;
+            totalDays--;
 
-        // Posodobimo statistiko
-        updateStatistics();
+            // Posodobimo statistiko
+            updateStatistics();
 
-        // Odstranimo zadnji vnos samo za današnji dan
-        exerciseData[lastDate].totalReps -= lastRepsForDay;
-        exerciseData[lastDate].entries.pop();
-        exerciseData[lastDate].maxSets.pop(); // Odstranimo tudi max set
+            // Odstranimo zadnji vnos samo za današnji dan
+            exerciseData[lastDate].totalReps -= lastRepsForDay;
+            exerciseData[lastDate].entries.pop();
+            exerciseData[lastDate].maxSets.pop(); // Odstranimo tudi max set
 
-        // Če ni več vnosov za današnji dan, izbrišemo datum iz podatkov
-        if (exerciseData[lastDate].entries.length === 0) {
-            delete exerciseData[lastDate];
+            // Če ni več vnosov za današnji dan, izbrišemo datum iz podatkov
+            if (exerciseData[lastDate].entries.length === 0) {
+                delete exerciseData[lastDate];
+            }
+
+            // Shranimo posodobljene podatke
+            saveData();
+
+            // Posodobimo graf
+            updateChart();
+
+            alert("Zadnji današnji vnos je bil odstranjen.");
+        } else {
+            alert("Brisanje preklicano.");
         }
-
-        // Shranimo posodobljene podatke
-        saveData();
-
-        // Posodobimo graf
-        updateChart();
-
-        alert("Zadnji današnji vnos je bil odstranjen.");
     } else {
         alert("Danes še ni bilo nobenega vnosa za brisanje.");
     }
