@@ -128,7 +128,7 @@ function showTemporaryMessage(message) {
     msgDiv.style.left = "50%";
     msgDiv.style.transform = "translateX(-50%)";
     msgDiv.style.background = "#333";
-    msgDiv.style.color = "#fff";
+    msgDiv.style.color = "#15161E";
     msgDiv.style.padding = "10px 20px";
     msgDiv.style.borderRadius = "5px";
     msgDiv.style.boxShadow = "0px 4px 6px rgba(0,0,0,0.1)";
