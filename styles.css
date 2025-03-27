@@ -169,6 +169,3 @@ domov {
 .stats-container {
     margin-top: 50px; /* Poveča razmik med gumbom in statistikami */
 }
-#modalOverlay {
-    background-color: rgba(0, 0, 0, 0.5); /* Polprosojno črno ozadje */
-}
