@@ -68,30 +68,41 @@ function addExercise() {
 }
 
 function removeLastExercise() {
-    if (setsData.length > 0) {
+    if (setsData.length === 0) return; // Če ni podatkov, ne naredi nič
+
+    const today = new Date().toISOString().split('T')[0]; // Današnji datum (YYYY-MM-DD)
+    const lastDate = Object.keys(exerciseData).pop(); // Zadnji datum v podatkih
+
+    if (lastDate === today) {
         const lastRepsForDay = setsData.pop();
         totalReps -= lastRepsForDay;
-        totalDays--;
+        totalDays--; 
 
-        // Update statistics
+        // Posodobimo statistiko
         updateStatistics();
 
-        // Update exerciseData by removing last entry
-        const lastDate = Object.keys(exerciseData).pop();
+        // Odstranimo zadnji vnos samo za današnji dan
         exerciseData[lastDate].totalReps -= lastRepsForDay;
         exerciseData[lastDate].entries.pop();
         exerciseData[lastDate].maxSets.pop(); // Odstranimo tudi max set
+
+        // Če ni več vnosov za današnji dan, izbrišemo datum iz podatkov
         if (exerciseData[lastDate].entries.length === 0) {
-            delete exerciseData[lastDate]; // Remove the date entry if no more exercises for that date
+            delete exerciseData[lastDate];
         }
 
-        // Save updated data to localStorage
+        // Shranimo posodobljene podatke
         saveData();
 
-        // Update chart
+        // Posodobimo graf
         updateChart();
+
+        alert("Zadnji današnji vnos je bil odstranjen.");
+    } else {
+        alert("Danes še ni bilo nobenega vnosa za brisanje.");
     }
 }
+
 
 function updateStatistics() {
     const averageRepsPerDay = totalDays > 0 ? totalReps / totalDays : 0;
