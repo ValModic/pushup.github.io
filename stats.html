@@ -155,23 +155,35 @@ function getWeeklyData() {
 
 function getWeeklyComparisonData() {
     let labels = [], totals = [], maxSets = [];
-    let weekNum = 1;
     let weeks = {};
+
     Object.keys(exerciseData).forEach(date => {
         const day = new Date(date);
-        const week = `Teden ${Math.ceil(new Date(date).getDate() / 7)}`;
-        if (!weeks[week]) weeks[week] = { totalReps: 0, maxSet: 0 };
-        weeks[week].totalReps += exerciseData[date].totalReps || 0;
-        weeks[week].maxSet = Math.max(weeks[week].maxSet, ...exerciseData[date].maxSets || [0]);
-        if (day.getDay() === 0) weekNum++;
+
+        // Najdemo ponedeljek istega tedna
+        const monday = new Date(day);
+        const dayOfWeek = day.getDay();
+        const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Če je nedelja, pojdi nazaj 6 dni
+        monday.setDate(day.getDate() + diff);
+        monday.setHours(0, 0, 0, 0);
+        
+        const weekLabel = `Teden ${monday.toISOString().split('T')[0]}`; // Format: "Teden YYYY-MM-DD"
+
+        if (!weeks[weekLabel]) weeks[weekLabel] = { totalReps: 0, maxSet: 0 };
+
+        weeks[weekLabel].totalReps += exerciseData[date].totalReps || 0;
+        weeks[weekLabel].maxSet = Math.max(weeks[weekLabel].maxSet, ...exerciseData[date].maxSets || [0]);
     });
+
     Object.keys(weeks).forEach(week => {
         labels.push(week);
         totals.push(weeks[week].totalReps);
         maxSets.push(weeks[week].maxSet);
     });
+
     return { labels, totals, maxSets };
 }
+
 
 function getMonthlyComparisonData() {
     let labels = [], totals = [], maxSets = [];
