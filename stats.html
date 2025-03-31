@@ -16,8 +16,7 @@
 
     <button class="domov" onclick="window.location.href='index.html'">Domov</button>
     <div class="stats-container">
-        <p>Skupaj ponovitev ta mesec: <span id="totalReps">0</span></p>
-        <p>Povprečje ponovitev na dan: <span id="averagePerDay">0</span></p>
+       
         <p>Skupaj ponovitev: <span id="totalReps">0</span></p>
         <p>Povprečje na dan: <span id="averagePerDay">0</span></p>
     </div>
@@ -212,30 +211,7 @@ function getMonthlyComparisonData() {
 
 window.onload = loadData;
 
-   function updateMonthlyStats() {
-            const now = new Date();
-            const currentMonth = now.getMonth();
-            const currentYear = now.getFullYear();
-            let totalReps = 0;
-            let daysWithData = new Set();
 
-            Object.keys(exerciseData).forEach(date => {
-                const entryDate = new Date(date);
-                if (entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear) {
-                    totalReps += exerciseData[date].totalReps || 0;
-                    daysWithData.add(entryDate.toDateString());
-                }
-            });
-
-            const averagePerDay = daysWithData.size > 0 ? Math.round(totalReps / daysWithData.size) : 0;
-
-            document.getElementById("totalReps").textContent = totalReps;
-            document.getElementById("averagePerDay").textContent = averagePerDay;
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            updateMonthlyStats();
-        });  
 </script>
 </body>
 </html>
