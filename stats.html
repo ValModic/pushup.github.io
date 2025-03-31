@@ -211,6 +211,36 @@ function getMonthlyComparisonData() {
 
 window.onload = loadData;
 
+function updateCurrentMonthStats() {
+    const now = new Date();
+    const currentMonth = now.getMonth();  // Trenutni mesec
+    const currentYear = now.getFullYear();  // Trenutno leto
+    let totalRepsThisMonth = 0;  // Skupaj ponovitev za ta mesec
+    let daysWithDataThisMonth = new Set();  // Set za dni z vnosi v tem mesecu
+
+    // Preglej vse vnose v exerciseData
+    Object.keys(exerciseData).forEach(date => {
+        const entryDate = new Date(date);
+
+        // Preveri, ali datum spada v trenutni mesec in leto
+        if (entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear) {
+            totalRepsThisMonth += exerciseData[date].totalReps || 0;  // Seštej ponovitve za ta dan
+            daysWithDataThisMonth.add(entryDate.toDateString());  // Dodaj dan v set
+        }
+    });
+
+    // Izračunaj povprečje ponovitev na dan za trenutni mesec
+    const averageRepsPerDayThisMonth = daysWithDataThisMonth.size > 0 ? Math.round(totalRepsThisMonth / daysWithDataThisMonth.size) : 0;
+
+    // Posodobi HTML elemente samo enkrat
+    document.getElementById("totalRepsThisMonth").textContent = totalRepsThisMonth;  // Prikaz skupnega števila ponovitev za ta mesec
+    document.getElementById("averageRepsPerDayThisMonth").textContent = averageRepsPerDayThisMonth;  // Prikaz povprečja na dan za ta mesec
+}
+
+// Klic funkcije ob nalaganju strani
+document.addEventListener("DOMContentLoaded", function () {
+    updateCurrentMonthStats();
+});
 
 </script>
 </body>
