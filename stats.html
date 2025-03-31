@@ -156,6 +156,8 @@ function getWeeklyData() {
 function getWeeklyComparisonData() {
     let labels = [], totals = [], maxSets = [];
     let weeks = {};
+    let weekIndex = 1;
+    let weekMap = new Map(); // Shrani zaporedne številke tednov
 
     Object.keys(exerciseData).forEach(date => {
         const day = new Date(date);
@@ -167,7 +169,13 @@ function getWeeklyComparisonData() {
         monday.setDate(day.getDate() + diff);
         monday.setHours(0, 0, 0, 0);
         
-        const weekLabel = `Teden ${monday.toISOString().split('T')[0]}`; // Format: "Teden YYYY-MM-DD"
+        const weekKey = monday.toISOString().split('T')[0]; // Enoličen ključ tedna
+
+        // Če tega tedna še ni v mapu, mu dodeli številko (Teden 1, Teden 2, ...)
+        if (!weekMap.has(weekKey)) {
+            weekMap.set(weekKey, `Teden ${weekIndex++}`);
+        }
+        const weekLabel = weekMap.get(weekKey);
 
         if (!weeks[weekLabel]) weeks[weekLabel] = { totalReps: 0, maxSet: 0 };
 
@@ -183,6 +191,7 @@ function getWeeklyComparisonData() {
 
     return { labels, totals, maxSets };
 }
+
 
 
 function getMonthlyComparisonData() {
