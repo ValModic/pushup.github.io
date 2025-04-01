@@ -268,5 +268,6 @@ function verifyDeleteAllData() {
         showTemporaryMessage("❌ Napačna koda! Podatki niso bili izbrisani.");
     }
 
-    closeDeleteModal(); // Zapre modal, ne glede na rezultat
+    document.getElementById("deleteCode").value = ""; // Počisti vnosno polje
+    closeDeleteModal(); // Zapre modal
 }
