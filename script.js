@@ -242,3 +242,22 @@ function savePushups(count) {
     localStorage.setItem('pushupData', JSON.stringify(pushupData));
 }
 console.log(localStorage.getItem('pushupData'));
+
+function promptDeleteAllData() {
+    let userInput = prompt("Za izbris vseh podatkov vnesi kodo:");
+
+    if (userInput === "140197") {
+        if (confirm("Ali res želiš izbrisati VSE podatke? Tega dejanja ni mogoče razveljaviti!")) {
+            localStorage.clear(); // Pobriše vse podatke
+            
+            showTemporaryMessage("Vsi podatki so bili uspešno izbrisani!");
+
+            // Po 1.5 sekunde osveži stran
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        }
+    } else if (userInput !== null) {
+        showTemporaryMessage("❌ Napačna koda! Podatki niso bili izbrisani.");
+    }
+}
