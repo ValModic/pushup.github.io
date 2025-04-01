@@ -132,15 +132,22 @@ options: {
 function getDailyMonthlyData() {
     let labels = [], totals = [], maxSets = [];
     const today = new Date();
+    const currentYear = today.getFullYear();
     const currentMonth = today.getMonth();
+
     for (let i = 1; i <= 31; i++) {
-        const dateStr = new Date(today.getFullYear(), currentMonth, i).toISOString().split('T')[0];
+        const date = new Date(currentYear, currentMonth, i);
+        if (date.getMonth() !== currentMonth) break; // Prepreči preseganje dni v mesecu
+
+        const dateStr = date.toLocaleDateString('sv-SE'); // Format "YYYY-MM-DD"
         labels.push(i);
         totals.push(exerciseData[dateStr] ? exerciseData[dateStr].totalReps : 0);
         maxSets.push(exerciseData[dateStr] ? Math.max(...(exerciseData[dateStr].maxSets || [0])) : 0);
     }
+
     return { labels, totals, maxSets };
 }
+
 
 function getWeeklyData() {
     let labels = ['Pon', 'Tor', 'Sre', 'Čet', 'Pet', 'Sob', 'Ned'], totals = [], maxSets = [];
