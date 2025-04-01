@@ -248,7 +248,8 @@ function promptDeleteAllData() {
 }
 
 function closeDeleteModal() {
-    document.getElementById("deleteModal").style.display = "none"; // Skrije modal
+    document.getElementById("deleteModal").style.display = "none";
+    document.getElementById("deleteCode").value = "";// Skrije modal
 }
 
 function verifyDeleteAllData() {
@@ -268,6 +269,6 @@ function verifyDeleteAllData() {
         showTemporaryMessage("❌ Napačna koda! Podatki niso bili izbrisani.");
     }
 
-    document.getElementById("deleteCode").value = ""; // Počisti vnosno polje
+    // Počisti vnosno polje
     closeDeleteModal(); // Zapre modal
 }
