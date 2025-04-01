@@ -55,10 +55,11 @@ input:focus {
     outline: none;
 }
 
+/* Osnovni stil za vse gumbe (ostanejo zeleni) */
 button {
     width: 100%;
     padding: 15px;
-    background-color: #4CAF50;
+    background-color: #4CAF50; /* Zelena barva */
     color: white;
     font-size: 18px;
     border: none;
@@ -76,18 +77,37 @@ button:active {
     background-color: #3c8e3c;
 }
 
+/* Gumb "Statistika" (oranžen) */
+.statistika {
+    background-color: #FF920F !important; /* Oranžna barva */
+}
+
+.statistika:hover {
+    background-color: #e6830a !important; /* Temnejša oranžna ob hoverju */
+}
+
+.statistika:active {
+    background-color: #cc7409 !important; /* Še temnejša oranžna */
+}
+
+/* Gumb "Odstrani" (rdeč) */
+.odstrani {
+    background-color: #f44336 !important; /* Rdeča barva */
+}
+
+.odstrani:hover {
+    background-color: #d32f2f !important; /* Temnejša rdeča */
+}
+
+.odstrani:active {
+    background-color: #b71c1c !important; /* Še temnejša rdeča */
+}
+
+/* Če imaš nepotrebno pravilo za zadnji gumb, ga lahko odstraniš */
 button:last-child {
-    background-color: #FF920F;
-    margin-top: 10px;
+    background-color: #FF920F; /* Če zadnji gumb ni vedno "Statistika", to odstrani */
 }
 
-button:last-child:hover {
-    background-color: #ff4d33;
-}
-
-button:last-child:active {
-    background-color: #FFF;
-}
 
 .statistics {
     margin-top: 30px;
@@ -168,15 +188,4 @@ domov {
 }
 .stats-container {
     margin-top: 50px; /* Poveča razmik med gumbom in statistikami */
-}
-.odstrani {
-    background-color: #f44336; /* Rdeča barva za "Odstrani" */
-}
-
-.odstrani:hover {
-    background-color: #d32f2f; /* Temnejša rdeča ob prehodu z miško */
-}
-
-.statistika {
-    background-color: #4CAF50; /* Enaka zelena kot osnovni gumbi */
 }
