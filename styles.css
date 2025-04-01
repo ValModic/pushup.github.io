@@ -169,3 +169,14 @@ domov {
 .stats-container {
     margin-top: 50px; /* Poveča razmik med gumbom in statistikami */
 }
+.odstrani {
+    background-color: #f44336; /* Rdeča barva za "Odstrani" */
+}
+
+.odstrani:hover {
+    background-color: #d32f2f; /* Temnejša rdeča ob prehodu z miško */
+}
+
+.statistika {
+    background-color: #4CAF50; /* Enaka zelena kot osnovni gumbi */
+}
