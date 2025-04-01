@@ -245,36 +245,28 @@ console.log(localStorage.getItem('pushupData'));
 
 function promptDeleteAllData() {
     document.getElementById("deleteModal").style.display = "block"; // Prikaže modalno okno
-    document.getElementById("deleteWarning").style.display = "none"; // Skrije opozorilo
-    document.getElementById("confirmDeleteButton").style.display = "none"; // Skrije potrditveni gumb
-    document.getElementById("checkCodeButton").style.display = "block"; // Pokaže preverjanje kode
-    document.getElementById("deleteCode").value = ""; // Počisti vnos
 }
 
 function closeDeleteModal() {
     document.getElementById("deleteModal").style.display = "none"; // Skrije modal
 }
 
-function checkDeleteCode() {
+function verifyDeleteAllData() {
     let userInput = document.getElementById("deleteCode").value;
 
     if (userInput === "140197") {
-        // Pokaže opozorilo in potrditveni gumb
-        document.getElementById("deleteWarning").style.display = "block";
-        document.getElementById("confirmDeleteButton").style.display = "block";
-        document.getElementById("checkCodeButton").style.display = "none"; // Skrije gumb za preverjanje kode
+        if (confirm("Ali res želiš izbrisati VSE podatke? Tega dejanja ni mogoče razveljaviti!")) {
+            localStorage.clear(); // Pobriše vse podatke
+
+            showTemporaryMessage("✅ Vsi podatki so bili uspešno izbrisani!");
+
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        }
     } else {
-        showTemporaryMessage("❌ Napačna koda! Poskusi znova.");
+        showTemporaryMessage("❌ Napačna koda! Podatki niso bili izbrisani.");
     }
-}
 
-function confirmDeleteAllData() {
-    localStorage.clear(); // Pobriše vse podatke
-    showTemporaryMessage("✅ Vsi podatki so bili uspešno izbrisani!");
-
-    setTimeout(() => {
-        location.reload();
-    }, 1500);
-    
-    closeDeleteModal(); // Zapre modal po uspešnem brisanju
+    closeDeleteModal(); // Zapre modal, ne glede na rezultat
 }
