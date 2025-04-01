@@ -91,14 +91,11 @@
         <h2>Izbris vseh podatkov</h2>
         <p>Za izbris vseh podatkov vnesi kodo:</p>
         <input type="password" id="deleteCode" placeholder="Vnesi kodo">
-        <p id="deleteWarning" style="display: none; color: red;">
-            Ali res želiš izbrisati VSE podatke? Tega dejanja ni mogoče razveljaviti!
-        </p>
-        <button id="checkCodeButton" onclick="checkDeleteCode()">Preveri kodo</button>
-        <button id="confirmDeleteButton" onclick="confirmDeleteAllData()" style="display: none;">Potrdi izbris</button>
+        <button onclick="verifyDeleteAllData()">Potrdi</button>
         <button onclick="closeDeleteModal()">Prekliči</button>
     </div>
 </div>
+
 
 
 </body>
