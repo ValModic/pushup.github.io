@@ -86,6 +86,15 @@
 
     <button onclick="promptDeleteAllData()" class="odstrani">Izbriši vse podatke</button>
 
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <h2>Izbris vseh podatkov</h2>
+        <p>Za izbris vseh podatkov vnesi kodo:</p>
+        <input type="password" id="deleteCode" placeholder="Vnesi kodo">
+        <button onclick="verifyDeleteAllData()">Potrdi</button>
+        <button onclick="closeDeleteModal()">Prekliči</button>
+    </div>
+</div>
 
 </body>
 </html>
