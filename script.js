@@ -272,15 +272,18 @@ function verifyDeleteAllData() {
     // Počisti vnosno polje
     closeDeleteModal(); // Zapre modal
 }
-// SHRANI CILJ
 function saveGoal() {
   const goal = parseInt(document.getElementById("goalInput").value);
   if (!isNaN(goal)) {
     localStorage.setItem("weeklyGoal", goal);
     localStorage.setItem("goalDate", new Date().toISOString());
+    console.log(`Cilj shranjen: ${goal}`);
     updateGoalProgress();
+  } else {
+    console.log("Vnesen ni veljaven cilj.");
   }
 }
+
 
 function updateGoalProgress() {
   const today = new Date();
@@ -291,7 +294,11 @@ function updateGoalProgress() {
   const goalDate = savedGoalDate ? new Date(savedGoalDate) : null;
   const weekExpired = goalDate && (today - goalDate > 7 * 24 * 60 * 60 * 1000);
 
+  // Preverite, da se cilj ne izbriše, dokler teden ni res pretekel
   if (isMonday || !goal || weekExpired) {
+    if (weekExpired) {
+      console.log("Teden je potekel, cilj bo odstranjen.");
+    }
     localStorage.removeItem("weeklyGoal");
     localStorage.removeItem("goalDate");
     document.getElementById("goalProgressText").textContent = "🆕 Nov teden – nastavi svoj cilj!";
@@ -316,3 +323,12 @@ function updateGoalProgress() {
   document.getElementById("goalProgressText").textContent =
     `📈 Ta teden: ${thisWeekTotal}/${goal} sklec (${goal > 0 ? Math.floor((thisWeekTotal / goal) * 100) : 0}%)`;
 }
+
+window.onload = () => {
+  // Preverite ali je ciljni podatek že shranjen ob nalaganju strani
+  const savedGoal = localStorage.getItem("weeklyGoal");
+  if (savedGoal) {
+    document.getElementById("goalInput").value = savedGoal;
+  }
+  updateGoalProgress();  // Posodobite napredek cilja ob nalaganju
+};
