@@ -288,10 +288,12 @@ function updateGoalProgress() {
   const savedGoalDate = localStorage.getItem("goalDate");
   const goal = parseInt(localStorage.getItem("weeklyGoal") || "0");
 
-  const isMonday = today.getDay() === 1; // Ponedeljek
+  // Preverimo, če je ponedeljek in ali je minil teden
+  const isMonday = today.getDay() === 1; // Ponedeljek (1)
   const goalDate = savedGoalDate ? new Date(savedGoalDate) : null;
-  const weekExpired = goalDate && (today - goalDate > 7 * 24 * 60 * 60 * 1000);
+  const weekExpired = goalDate && (today - goalDate > 7 * 24 * 60 * 60 * 1000); // minil teden
 
+  // Če je ponedeljek ali je minil teden, resetiramo cilje
   if (isMonday || !goal || weekExpired) {
     localStorage.removeItem("weeklyGoal");
     localStorage.removeItem("goalDate");
@@ -301,16 +303,16 @@ function updateGoalProgress() {
 
   const savedData = JSON.parse(localStorage.getItem("pushupData") || "[]");
 
-  // Filtriraj samo vnose iz zadnjega tedna
+  // Filtriramo samo vnose iz zadnjega tedna
   const oneWeekAgo = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
   const thisWeekTotal = savedData
     .filter(entry => new Date(entry.date) >= oneWeekAgo)
     .reduce((sum, entry) => sum + entry.count, 0);
 
-  // Prikaz napredka: koliko je narejeno in koliko še manjka
+  // Prikaz napredka: koliko sklec je bilo narejenih v tem tednu
   document.getElementById("goalProgressText").textContent =
     `📈 Ta teden: ${thisWeekTotal}/${goal} sklec (${goal > 0 ? Math.floor((thisWeekTotal / goal) * 100) : 0}%)`;
 }
 
-// Za takojšnji prikaz ob nalaganju strani
+// Takoj ob nalaganju strani prikažemo napredek
 updateGoalProgress();
