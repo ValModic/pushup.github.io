@@ -318,4 +318,3 @@ function updateGoalProgress() {
 document.addEventListener('DOMContentLoaded', () => {
   updateGoalProgress();
 });
-
