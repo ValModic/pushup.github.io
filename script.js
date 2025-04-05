@@ -197,6 +197,11 @@ function updateChart() {
 
 // Nalaganje podatkov ob nalaganju strani
 window.onload = loadData;
+const savedGoal = localStorage.getItem("weeklyGoal");
+  if (savedGoal) {
+    document.getElementById("goalInput").value = savedGoal;
+  }
+  updateGoalProgress();
 
 function requestNotificationPermission() {
     if ('Notification' in window) {
