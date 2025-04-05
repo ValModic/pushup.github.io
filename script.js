@@ -301,6 +301,7 @@ function updateGoalProgress() {
     return;
   }
 
+  // Preberemo shranjene podatke o sklecah
   const savedData = JSON.parse(localStorage.getItem("pushupData") || "[]");
 
   // Filtriramo samo vnose iz zadnjega tedna
