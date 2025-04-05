@@ -324,11 +324,3 @@ function updateGoalProgress() {
     `📈 Ta teden: ${thisWeekTotal}/${goal} sklec (${goal > 0 ? Math.floor((thisWeekTotal / goal) * 100) : 0}%)`;
 }
 
-window.onload = () => {
-  // Preverite ali je ciljni podatek že shranjen ob nalaganju strani
-  const savedGoal = localStorage.getItem("weeklyGoal");
-  if (savedGoal) {
-    document.getElementById("goalInput").value = savedGoal;
-  }
-  updateGoalProgress();  // Posodobite napredek cilja ob nalaganju
-};
