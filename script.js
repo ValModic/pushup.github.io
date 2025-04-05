@@ -315,4 +315,7 @@ function updateGoalProgress() {
 }
 
 // Takoj ob nalaganju strani prikažemo napredek
-updateGoalProgress();
+document.addEventListener('DOMContentLoaded', () => {
+  updateGoalProgress();
+});
+
