@@ -30,6 +30,11 @@
             <button class="other-button" onclick="addExercise()">Dodaj vadbo</button>
             <button class="odstrani" onclick="removeLastExercise()">Odstrani zadnji vnos</button>
         </div>
+        <h3>🎯 Nastavi svoj tedenski cilj:</h3>
+<input type="number" id="goalInput" placeholder="Npr. 300" />
+<button onclick="saveGoal()">Shrani cilj</button>
+<p id="goalProgressText">Nalaganje cilja...</p>
+
         <div class="statistics">
             <p>Skupaj ponovitev: <span id="totalReps">0</span></p>
             <p>Povprečje ponovitev na dan: <span id="averagePerDay">0.00</span></p>
