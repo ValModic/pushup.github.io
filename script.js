@@ -282,18 +282,15 @@ function saveGoal() {
   }
 }
 
-// PRIKAZ CILJA IN NAPREDKA
 function updateGoalProgress() {
   const today = new Date();
   const savedGoalDate = localStorage.getItem("goalDate");
   const goal = parseInt(localStorage.getItem("weeklyGoal") || "0");
 
-  // Preverimo, če je ponedeljek in ali je minil teden
-  const isMonday = today.getDay() === 1; // Ponedeljek (1)
+  const isMonday = today.getDay() === 1;
   const goalDate = savedGoalDate ? new Date(savedGoalDate) : null;
-  const weekExpired = goalDate && (today - goalDate > 7 * 24 * 60 * 60 * 1000); // minil teden
+  const weekExpired = goalDate && (today - goalDate > 7 * 24 * 60 * 60 * 1000);
 
-  // Če je ponedeljek ali je minil teden, resetiramo cilje
   if (isMonday || !goal || weekExpired) {
     localStorage.removeItem("weeklyGoal");
     localStorage.removeItem("goalDate");
@@ -301,16 +298,16 @@ function updateGoalProgress() {
     return;
   }
 
-  // Preberemo shranjene podatke o sklecah
-  const savedData = JSON.parse(localStorage.getItem("pushupData") || "[]");
+  const startOfWeek = new Date(today);
+  const day = today.getDay() === 0 ? 7 : today.getDay(); // nedelja = 7
+  startOfWeek.setDate(today.getDate() - (day - 1));
+  startOfWeek.setHours(0, 0, 0, 0);
 
-  // Filtriramo samo vnose iz zadnjega tedna
-  const oneWeekAgo = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+  const savedData = JSON.parse(localStorage.getItem("pushupData") || "[]");
   const thisWeekTotal = savedData
-    .filter(entry => new Date(entry.date) >= oneWeekAgo)
+    .filter(entry => new Date(entry.date) >= startOfWeek)
     .reduce((sum, entry) => sum + entry.count, 0);
 
-  // Prikaz napredka: koliko sklec je bilo narejenih v tem tednu
   document.getElementById("goalProgressText").textContent =
     `📈 Ta teden: ${thisWeekTotal}/${goal} sklec (${goal > 0 ? Math.floor((thisWeekTotal / goal) * 100) : 0}%)`;
 }
