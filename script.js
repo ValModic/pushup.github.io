@@ -272,3 +272,45 @@ function verifyDeleteAllData() {
     // Počisti vnosno polje
     closeDeleteModal(); // Zapre modal
 }
+// SHRANI CILJ
+function saveGoal() {
+  const goal = parseInt(document.getElementById("goalInput").value);
+  if (!isNaN(goal)) {
+    localStorage.setItem("weeklyGoal", goal);
+    localStorage.setItem("goalDate", new Date().toISOString());
+    updateGoalProgress();
+  }
+}
+
+// PRIKAZ CILJA IN NAPREDKA
+function updateGoalProgress() {
+  const today = new Date();
+  const savedGoalDate = localStorage.getItem("goalDate");
+  const goal = parseInt(localStorage.getItem("weeklyGoal") || "0");
+
+  const isMonday = today.getDay() === 1; // Ponedeljek
+  const goalDate = savedGoalDate ? new Date(savedGoalDate) : null;
+  const weekExpired = goalDate && (today - goalDate > 7 * 24 * 60 * 60 * 1000);
+
+  if (isMonday || !goal || weekExpired) {
+    localStorage.removeItem("weeklyGoal");
+    localStorage.removeItem("goalDate");
+    document.getElementById("goalProgressText").textContent = "🆕 Nov teden – nastavi svoj cilj!";
+    return;
+  }
+
+  const savedData = JSON.parse(localStorage.getItem("pushupData") || "[]");
+
+  // Filtriraj samo vnose iz zadnjega tedna
+  const oneWeekAgo = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+  const thisWeekTotal = savedData
+    .filter(entry => new Date(entry.date) >= oneWeekAgo)
+    .reduce((sum, entry) => sum + entry.count, 0);
+
+  // Prikaz napredka: koliko je narejeno in koliko še manjka
+  document.getElementById("goalProgressText").textContent =
+    `📈 Ta teden: ${thisWeekTotal}/${goal} sklec (${goal > 0 ? Math.floor((thisWeekTotal / goal) * 100) : 0}%)`;
+}
+
+// Za takojšnji prikaz ob nalaganju strani
+updateGoalProgress();
