@@ -299,20 +299,24 @@ function updateGoalProgress() {
   }
 
   const startOfWeek = new Date(today);
-  const day = today.getDay() === 0 ? 7 : today.getDay(); // nedelja = 7
+  const day = today.getDay() === 0 ? 7 : today.getDay();
   startOfWeek.setDate(today.getDate() - (day - 1));
   startOfWeek.setHours(0, 0, 0, 0);
 
+  console.log("🗓️ Start of this week:", startOfWeek.toISOString());
+
   const savedData = JSON.parse(localStorage.getItem("pushupData") || "[]");
-  const thisWeekTotal = savedData
-    .filter(entry => new Date(entry.date) >= startOfWeek)
-    .reduce((sum, entry) => sum + entry.count, 0);
+  console.log("📦 All saved data:", savedData);
+
+  const filteredData = savedData.filter(entry => {
+    const entryDate = new Date(entry.date);
+    const include = entryDate >= startOfWeek;
+    console.log(`🧐 Checking ${entry.date} -> ${entryDate.toISOString()} include: ${include}`);
+    return include;
+  });
+
+  const thisWeekTotal = filteredData.reduce((sum, entry) => sum + entry.count, 0);
 
   document.getElementById("goalProgressText").textContent =
     `📈 Ta teden: ${thisWeekTotal}/${goal} sklec (${goal > 0 ? Math.floor((thisWeekTotal / goal) * 100) : 0}%)`;
 }
-
-// Takoj ob nalaganju strani prikažemo napredek
-document.addEventListener('DOMContentLoaded', () => {
-  updateGoalProgress();
-});
