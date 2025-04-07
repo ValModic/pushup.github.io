@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistika - Pushup</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    
+
+</head>
+<body>
+
+<div class="container">
+    <h1>Statistika sklec☺️💪</h1>
+
+    <button class="domov" onclick="window.location.href='index.html'">Domov</button>
+    <div class="stats-container">
+   
+        <p>Skupaj ponovitev: <span id="totalReps">0</span></p>
+        <p>Povprečje na dan: <span id="averagePerDay">0</span></p>
+    </div>
+
+    <div class="chart-container">
+        <h2>Mesečna statistika</h2>
+        <canvas id="monthlyChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h2>Tedenska statistika</h2>
+        <canvas id="weeklyChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h2>Primerjava tednov</h2>
+        <canvas id="weeklyComparisonChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h2>Primerjava mesecev</h2>
+        <canvas id="monthlyComparisonChart"></canvas>
+    </div>
+</div>
+ <button onclick="window.location.href='progress.html'">Poglej moj napredek💪</button>
+    
+<script>
+let exerciseData = {};
+
+function loadData() {
+    const savedData = localStorage.getItem('exerciseData');
+    if (savedData) {
+        exerciseData = JSON.parse(savedData);
+        updateStatistics();
+        updateCharts();
+    }
+}
+
+function updateStatistics() {
+    let totalReps = 0;
+    let totalDays = Object.keys(exerciseData).length;
+    Object.values(exerciseData).forEach(data => totalReps += data.totalReps || 0);
+    document.getElementById('totalReps').textContent = totalReps;
+    document.getElementById('averagePerDay').textContent = totalDays > 0 ? (totalReps / totalDays).toFixed(2) : 0;
+}
+
+function updateCharts() {
+    createChart('monthlyChart', getDailyMonthlyData(), 'Mesečna statistika');
+    createChart('weeklyChart', getWeeklyData(), 'Tedenska statistika');
+    createChart('weeklyComparisonChart', getWeeklyComparisonData(), 'Primerjava tednov');
+    createChart('monthlyComparisonChart', getMonthlyComparisonData(), 'Primerjava mesecev');
+}
+
+function createChart(canvasId, data, label) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data.labels,
+            datasets: [
+                { 
+                    type: 'bar',
+                    label: 'Skupaj ponovitev', 
+                    data: data.totals, 
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                },
+               
+                { 
+                    type: 'bar',
+                    label: 'Max set', 
+                    data: data.maxSets, 
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderWidth: 2,
+                    pointRadius: 5,
+                    fill: false,
+                    tension: 0.4
+                }
+            ]
+        },
+options: {
+    responsive: true,
+    scales: {
+        y: {
+            beginAtZero: true,
+            grid: {
+                color: 'rgba(255, 255, 255, 0.5)', // Vse mrežne črte bele
+                lineWidth: 1
+            },
+            border: {
+                color: 'white' // Osna črta postane bela
+            }
+        },
+        x: {
+            grid: {
+                color: 'rgba(255, 255, 255, 0.5)', // Vse mrežne črte bele
+                lineWidth: 1
+            },
+            border: {
+                color: 'white' // Osna črta postane bela
+            }
+        }
+    }
+}
+
+
+    });
+}
+
+
+function getDailyMonthlyData() {
+    let labels = [], totals = [], maxSets = [];
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth();
+
+    for (let i = 1; i <= 31; i++) {
+        const date = new Date(currentYear, currentMonth, i);
+        if (date.getMonth() !== currentMonth) break; // Prepreči preseganje dni v mesecu
+
+        const dateStr = date.toLocaleDateString('sv-SE'); // Format "YYYY-MM-DD"
+        labels.push(i);
+        totals.push(exerciseData[dateStr] ? exerciseData[dateStr].totalReps : 0);
+        maxSets.push(exerciseData[dateStr] ? Math.max(...(exerciseData[dateStr].maxSets || [0])) : 0);
+    }
+
+    return { labels, totals, maxSets };
+}
+
+
+function getWeeklyData() {
+    let labels = ['Pon', 'Tor', 'Sre', 'Čet', 'Pet', 'Sob', 'Ned'], totals = [], maxSets = [];
+    const today = new Date();
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+    for (let i = 0; i < 7; i++) {
+        const date = new Date(monday);
+        date.setDate(monday.getDate() + i);
+        const dateStr = date.toISOString().split('T')[0];
+        totals.push(exerciseData[dateStr] ? exerciseData[dateStr].totalReps : 0);
+        maxSets.push(exerciseData[dateStr] ? Math.max(...(exerciseData[dateStr].maxSets || [0])) : 0);
+    }
+    return { labels, totals, maxSets };
+}
+
+function getWeeklyComparisonData() {
+    let labels = [], totals = [], maxSets = [];
+    let weeks = {};
+    let weekIndex = 1;
+    let weekMap = new Map(); // Shrani zaporedne številke tednov
+
+    Object.keys(exerciseData).forEach(date => {
+        const day = new Date(date);
+
+        // Najdemo ponedeljek istega tedna
+        const monday = new Date(day);
+        const dayOfWeek = day.getDay();
+        const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Če je nedelja, pojdi nazaj 6 dni
+        monday.setDate(day.getDate() + diff);
+        monday.setHours(0, 0, 0, 0);
+        
+        const weekKey = monday.toISOString().split('T')[0]; // Enoličen ključ tedna
+
+        // Če tega tedna še ni v mapu, mu dodeli številko (Teden 1, Teden 2, ...)
+        if (!weekMap.has(weekKey)) {
+            weekMap.set(weekKey, `Teden ${weekIndex++}`);
+        }
+        const weekLabel = weekMap.get(weekKey);
+
+        if (!weeks[weekLabel]) weeks[weekLabel] = { totalReps: 0, maxSet: 0 };
+
+        weeks[weekLabel].totalReps += exerciseData[date].totalReps || 0;
+        weeks[weekLabel].maxSet = Math.max(weeks[weekLabel].maxSet, ...exerciseData[date].maxSets || [0]);
+    });
+
+    Object.keys(weeks).forEach(week => {
+        labels.push(week);
+        totals.push(weeks[week].totalReps);
+        maxSets.push(weeks[week].maxSet);
+    });
+
+    return { labels, totals, maxSets };
+}
+
+
+
+function getMonthlyComparisonData() {
+    let labels = [], totals = [], maxSets = [];
+    for (let i = 1; i <= 12; i++) {
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun', 'Jul', 'Avg', 'Sep', 'Okt', 'Nov', 'Dec'];
+        labels.push(monthNames[i - 1]);
+        let monthData = Object.keys(exerciseData).filter(date => new Date(date).getMonth() + 1 === i).map(date => exerciseData[date]);
+        totals.push(monthData.reduce((sum, d) => sum + (d.totalReps || 0), 0));
+        maxSets.push(Math.max(...monthData.map(d => Math.max(...(d.maxSets || [0]))), 0));
+    }
+    return { labels, totals, maxSets };
+}
+
+window.onload = loadData;
+
+
+   
+
+    function updateCurrentMonthStats() {
+        const now = new Date();
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
+        let totalRepsThisMonth = 0;
+        let daysWithDataThisMonth = new Set();
+
+        Object.keys(exerciseData).forEach(date => {
+            const entryDate = new Date(date);
+            if (entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear) {
+                totalRepsThisMonth += exerciseData[date].totalReps || 0;
+                daysWithDataThisMonth.add(entryDate.toDateString());
+            }
+        });
+
+        const averageRepsPerDayThisMonth = daysWithDataThisMonth.size > 0 ? Math.round(totalRepsThisMonth / daysWithDataThisMonth.size) : 0;
+
+        document.getElementById("totalRepsThisMonth").textContent = totalRepsThisMonth;
+        document.getElementById("averagePerDayThisMonth").textContent = averageRepsPerDayThisMonth;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        updateCurrentMonthStats();
+    });
+
+
+
+</script>
+</body>
+</html>
+

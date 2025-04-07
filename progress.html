@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+ <html lang="sl">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Napredek</title>
+      <link rel="stylesheet" href="styles.css"> <!-- Povezava do istega CSS -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+  </head>
+  <body>
+      <h1>Napredek💪</h1>
+  
+      <!-- Prikaz napredka -->
+      <div id="progressStats">
+          <h3>Napredek</h3>
+          <p id="goalProgressText">📈 Napredek za ta teden: 0/0</p>
+          <p id="allTimeStats">
+              <strong>Skupno število sklec: 0</strong><br>
+              <strong>Povprečje na dan: 0</strong><br>
+              <strong>Največji set: 0</strong>
+          </p>
+      </div>
+  <div id="streakDisplay"></div>
+
+      <!-- Gumb za prenos napredka kot sliko -->
+      <button id="downloadProgressBtn">Prenesi napredek kot sliko</button>
+  <!-- Gumb, ki deluje kot povezava na domačo stran -->
+  <a href="index.html">
+    <button class="home-btn">Nazaj na domačo stran</button>
+  </a>
+  
+      <script src="progress.js"></script>
+  </body>

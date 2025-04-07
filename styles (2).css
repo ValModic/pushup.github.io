@@ -1,0 +1,270 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color:  #242634;
+    color: #FFF;
+    padding: 20px;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #15161E;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+h1 {
+    font-size: 28px;
+    color: #FFF;
+    margin-bottom: 30px;
+    font-weight: bold;
+}
+
+.exercise {
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 16px;
+    color: #FFF;
+    display: block;
+    margin-bottom: 8px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s ease;
+}
+
+input:focus {
+    background-color: #eaf6ff;
+    border-color: #4CAF50;
+    outline: none;
+}
+
+/* Osnovni stil za vse gumbe (ostanejo zeleni) */
+button {
+    width: 100%;
+    padding: 15px;
+    background-color: #4CAF50; /* Zelena barva */
+    color: white;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+button:active {
+    background-color: #3c8e3c;
+}
+
+/* Gumb "Statistika" (oranžen) */
+.statistika {
+    background-color: #FF920F !important; /* Oranžna barva */
+}
+
+.statistika:hover {
+    background-color: #e6830a !important; /* Temnejša oranžna ob hoverju */
+}
+
+.statistika:active {
+    background-color: #cc7409 !important; /* Še temnejša oranžna */
+}
+
+/* Gumb "Odstrani" (rdeč) */
+.odstrani {
+    background-color: #f44336 !important; /* Rdeča barva */
+}
+
+.odstrani:hover {
+    background-color: #d32f2f !important; /* Temnejša rdeča */
+}
+
+.odstrani:active {
+    background-color: #b71c1c !important; /* Še temnejša rdeča */
+}
+
+/* Če imaš nepotrebno pravilo za zadnji gumb, ga lahko odstraniš */
+button:last-child {
+    background-color: #FF920F; /* Če zadnji gumb ni vedno "Statistika", to odstrani */
+}
+
+
+.statistics {
+    margin-top: 30px;
+    font-size: 18px;
+}
+
+.statistics p {
+    margin: 10px 0;
+}
+
+#totalReps, #averagePerDay {
+    font-weight: bold;
+    color: #FFF;
+}
+
+.chart {
+    margin-top: 40px;
+}
+
+footer {
+    margin-top: 50px;
+    font-size: 14px;
+    color: #FFF;
+}
+
+footer a {
+    text-decoration: none;
+    color: #4CAF50;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+.chart-container {
+    width: 100%;
+    max-width: 100%;
+    height: auto; /* Ohranja avtomatsko višino */
+    aspect-ratio: 16 / 9; /* Prepreči raztezanje v višino */
+}
+
+canvas {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 300px; /* Določi maksimalno višino */
+}
+
+.notify-button {
+    background-color: #4CAF50; /* Zelena barva za ozadje */
+    color: white; /* Bele črke */
+    border: none; /* Odstrani rob */
+    border-radius: 5px; /* Zaobljeni robovi */
+    padding: 15px 32px; /* Notranji razmiki */
+    text-align: center; /* Poravnava besedila */
+    text-decoration: none; /* Odstrani podčrtavanje */
+    display: inline-block; /* Da gumb ostane v vrstici */
+    font-size: 16px; /* Velikost pisave */
+    cursor: pointer; /* Kazalec, ki kaže, da je gumb klikabilen */
+    transition: background-color 0.3s ease; /* Prehod za spremembo barve ob hoverju */
+    margin-bottom: 20px; /* Dodaj prostor pod gumbom */
+}
+
+/* Slog gumba za obvestila pri premiku miške (hover) */
+.notify-button:hover {
+    background-color: #45a049; /* Rahlo temnejša zelena pri hoverju */
+}
+
+/* Slog gumba za obvestila, ko je fokusiran */
+.notify-button:focus {
+    outline: none; /* Odstrani rob okoli gumba ob fokusiranju */
+    box-shadow: 0 0 5px rgba(72, 172, 85, 0.8); /* Mehka senca okoli gumba ob klikih */
+}
+domov {
+    height: 60px; /* Poveča višino gumba */
+    font-size: 20px; /* Poveča velikost pisave */
+    padding: 15px 25px; /* Doda večji notranji odmik */
+    margin-bottom: 30px; /* Doda več razmika med gumbom in statistikami */
+}
+.stats-container {
+    margin-top: 50px; /* Poveča razmik med gumbom in statistikami */
+}
+#uploadedImage {
+    max-width: 100%;
+    margin-top: 10px;
+}
+
+#progressStats {
+    margin-top: 20px;
+}
+.home-btn {
+    background-color: #4CAF50; /* Zeleni gumb */
+    color: white; /* Bela barva besedila */
+    padding: 10px 20px; /* Dodajte nekaj prostora okoli besedila */
+    text-align: center; /* Poravnajte besedilo na sredino */
+    font-size: 16px; /* Velikost pisave */
+    border: none; /* Odstranite robove */
+    border-radius: 5px; /* Zaobljeni robovi */
+    cursor: pointer; /* Spreminjanje kazalca miške na roko */
+    margin-top: 20px; /* Dodajte nekaj prostora nad gumbom */
+}
+
+/* Dodaten učinek ob premiku miške */
+.home-btn:hover {
+    background-color: #45a049;
+}
+#awardsDisplay {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#awardsList {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.award {
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px;
+    font-size: 16px;
+    text-align: center;
+    width: 120px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.award span {
+    font-size: 24px; /* Velikost ikone */
+    display: block;
+}
+.streak-box {
+    background-color: #fff5e0;
+    border: 2px solid #ffa500;
+    border-radius: 16px;
+    padding: 1rem;
+    margin-top: 1.5rem;
+    box-shadow: 0 0 10px rgba(255, 165, 0, 0.2);
+}
+
+.streak-box h3, .streak-box h4 {
+    margin: 0.5rem 0;
+    color: #ff6a00;
+}
+
+.streak-box span {
+    font-weight: bold;
+    color: #d35400;
+}
+
+.achievements ul {
+    padding-left: 1.2rem;
+    margin-top: 0.5rem;
+}
+
+.achievements li {
+    list-style: "✅ ";
+    margin-bottom: 0.3rem;
+    color: #444;
+}
